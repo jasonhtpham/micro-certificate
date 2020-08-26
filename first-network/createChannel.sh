@@ -1,10 +1,12 @@
-export CORE_PEER_TLS_ENABLED=true
-export ORDERER_CA=${PWD}/crypto-output/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-export PEER0_ORG1_CA=${PWD}/crypto-output/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
-export PEER0_ORG2_CA=${PWD}/crypto-output/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
-export FABRIC_CFG_PATH=${PWD}/
-
-export CHANNEL_NAME=mychannel
+setGlobals() {
+    echo "===== Set global variables ====="
+    export CORE_PEER_TLS_ENABLED=true
+    export ORDERER_CA=${PWD}/crypto-output/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    export PEER0_ORG1_CA=${PWD}/crypto-output/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
+    export PEER0_ORG2_CA=${PWD}/crypto-output/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    export FABRIC_CFG_PATH=${PWD}/
+    export CHANNEL_NAME=mychannel
+}
 
 # setGlobalsForOrderer(){
 #     export CORE_PEER_LOCALMSPID="OrdererMSP"
@@ -48,10 +50,13 @@ createChannel(){
     rm -rf ./channel/*
     setGlobalsForPeer0Org1
     
+    echo "===== Creating Channel ====="
     peer channel create -o localhost:7050 -c $CHANNEL_NAME \
     --ordererTLSHostnameOverride orderer.example.com \
     -f ./channel-artefacts/${CHANNEL_NAME}.tx --outputBlock ./channel/${CHANNEL_NAME}.block \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+    echo "===== Channel Created ====="
+
 }
 
 removeOldCrypto(){
@@ -63,6 +68,7 @@ removeOldCrypto(){
 
 
 joinChannel(){
+    echo "===== Joining Channel ====="
     setGlobalsForPeer0Org1
     peer channel join -b ./channel/$CHANNEL_NAME.block
     
@@ -72,6 +78,8 @@ joinChannel(){
     setGlobalsForPeer0Org2
     peer channel join -b ./channel/$CHANNEL_NAME.block
     
+    echo "===== Channel Joined ====="
+
 #    setGlobalsForPeer1Org2
 #    peer channel join -b ./channel/$CHANNEL_NAME.block
     
@@ -84,14 +92,86 @@ updateAnchorPeers(){
     setGlobalsForPeer0Org2
     peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME -f ./channel-artefacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
     
+    echo "===== Anchor Peers Updated! ====="
 }
 
 # removeOldCrypto
 
-# setGlobalsForPeer1Org1
-# createChannel
-# joinChannel
-# updateAnchorPeers
+setGlobals
+createChannel
+joinChannel
+updateAnchorPeers
+
+CHANNEL_NAME="mychannel"
+CC_RUNTIME_LANGUAGE="node"
+VERSION="1"
+CC_SRC_PATH="./contract"
+CC_NAME="cert"
+
+
+InstallChaincode() {
+    echo "===== Install CC on peer0.Org1 ====="
+    setGlobalsForPeer0Org1
+    peer lifecycle chaincode install cert.tar.gz
+
+    echo "===== Install CC on peer0.Org2 ====="
+    setGlobalsForPeer0Org2
+    peer lifecycle chaincode install cert.tar.gz
+}
+
+
+CheckCommitReadiness () {
+    peer lifecycle chaincode checkcommitreadiness --channelID mychannel \
+    --name cert --version 1.0 --sequence 1 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --output json
+}
+
+ApproveChaincode () {
+    setGlobalsForPeer0Org1
+
+    #Query Installed cc to get PACKAGE_ID
+    peer lifecycle chaincode queryinstalled >&log.txt
+    cat log.txt
+    PACKAGE_ID=$(sed -n "/${CC_NAME}_${VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
+
+    # Approve cc on peer0Org1
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+    --channelID mychannel --name cert --version 1.0 \
+    --package-id $PACKAGE_ID --sequence 1 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+
+    echo "CC is approved by peer0.Org1.example.com"
+    # Check commit readiness on Org1
+    echo "===================== checking commit readyness from org 1 ===================== "
+    CheckCommitReadiness
+
+    # Approve cc on peer0Org1
+    setGlobalsForPeer0Org2
+
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+    --channelID mychannel --name cert --version 1.0 \
+    --package-id $PACKAGE_ID --sequence 1 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+    echo "CC is approved by peer0.Org2.example.com"
+    # Check commit readiness on Org2
+    echo "===================== checking commit readyness from org 2 ===================== "
+    CheckCommitReadiness
+}
+
+CommitChaincode () {
+    setGlobalsForPeer0Org1
+    peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+    --channelID mychannel --name cert --version 1.0 --sequence 1 \
+    --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
+    echo "==================== Committing Chaincode ===================="
+    peer lifecycle chaincode querycommitted --channelID mychannel --name cert --cafile $ORDERER_CA
+}
+
+InstallChaincode
+ApproveChaincode
+CommitChaincode
 
 # Package chaincode
 # peer lifecycle chaincode package ${CC_NAME}.tar.gz --path ${CC_SRC_PATH} --lang ${CC_RUNTIME_LANGUAGE} --label ${CC_NAME}_${CC_VERSION}
@@ -104,13 +184,11 @@ updateAnchorPeers(){
 # Query installed chaincode on a peer
 # peer lifecycle chaincode queryinstalled
 
-export PACKAGE_ID=cert_1:4e5c7f67368877f7be32711ff0a7b302d3d701620ca7c2305457f9f784acae4f
-
 # Approve chaincode - needs to be executed on ALL ORGS
-peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
---channelID mychannel --name cert --version 1.0 \
---package-id $PACKAGE_ID --sequence 1 \
---tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+# peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+# --channelID mychannel --name cert --version 1.0 \
+# --package-id $PACKAGE_ID --sequence 1 \
+# --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
 
 # Check commit readiness after approving cc
 # peer lifecycle chaincode checkcommitreadiness --channelID mychannel \
@@ -126,3 +204,20 @@ peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameO
 
 # Query commited chaincode
 # peer lifecycle chaincode querycommitted --channelID mychannel --name cert --cafile $ORDERER_CA
+
+# Invoke chaincode
+# peer chaincode invoke -o localhost:7050 \
+# --ordererTLSHostnameOverride orderer.example.com \
+# --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+# -C mychannel -n cert \
+# --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+# --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+# -c '{"Args":[]}'
+
+
+# peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+# --tls --cafile ${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem \
+# -C mychannel -n fabcar \
+# --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt \
+# --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt \
+# -c '{"function":"createCar","Args":["CAR11","Honda","Accord","Black","Tom"]}'
