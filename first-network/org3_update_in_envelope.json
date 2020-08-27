@@ -102,7 +102,7 @@
                           "identities": [
                             {
                               "principal": {
-                                "msp_identifier": "OrdererMSP",
+                                "msp_identifier": "Org3MSP",
                                 "role": "ADMIN"
                               },
                               "principal_classification": "ROLE"
@@ -160,7 +160,7 @@
                           "identities": [
                             {
                               "principal": {
-                                "msp_identifier": "OrdererMSP",
+                                "msp_identifier": "Org3MSP",
                                 "role": "MEMBER"
                               },
                               "principal_classification": "ROLE"
@@ -189,7 +189,7 @@
                           "identities": [
                             {
                               "principal": {
-                                "msp_identifier": "OrdererMSP",
+                                "msp_identifier": "Org3MSP",
                                 "role": "MEMBER"
                               },
                               "principal_classification": "ROLE"

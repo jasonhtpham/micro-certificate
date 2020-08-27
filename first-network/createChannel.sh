@@ -4,6 +4,7 @@ setGlobals() {
     export ORDERER_CA=${PWD}/crypto-output/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
     export PEER0_ORG1_CA=${PWD}/crypto-output/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
     export PEER0_ORG2_CA=${PWD}/crypto-output/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+    # export PEER0_ORG3_CA=${PWD}/org3-materials/crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
     export FABRIC_CFG_PATH=${PWD}/
     export CHANNEL_NAME=mychannel
 }
@@ -46,6 +47,13 @@ setGlobalsForPeer1Org2(){
     
 }
 
+# setGlobalsForPeer0Org3(){
+# export CORE_PEER_LOCALMSPID="Org3MSP"
+# export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
+# export CORE_PEER_MSPCONFIGPATH=${PWD}/org3-materials/crypto-config/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
+# export CORE_PEER_ADDRESS=localhost:11051
+# }
+
 createChannel(){
     rm -rf ./channel/*
     setGlobalsForPeer0Org1
@@ -65,7 +73,6 @@ removeOldCrypto(){
     rm -rf ./api-2.0/org1-wallet/*
     rm -rf ./api-2.0/org2-wallet/*
 }
-
 
 joinChannel(){
     echo "===== Joining Channel ====="
@@ -137,7 +144,7 @@ ApproveChaincode () {
     # Approve cc on peer0Org1
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     --channelID mychannel --name cert --version 1.0 \
-    --package-id $PACKAGE_ID --sequence 1 \
+    --package-id $PACKAGE_ID --sequence 2 \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
 
     echo "CC is approved by peer0.Org1.example.com"
@@ -162,9 +169,10 @@ CommitChaincode () {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
-    --channelID mychannel --name cert --version 1.0 --sequence 1 \
+    --channelID mychannel --name cert --version 1.0 --sequence 2 \
     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
+    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+    --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA
     echo "==================== Committing Chaincode ===================="
     peer lifecycle chaincode querycommitted --channelID mychannel --name cert --cafile $ORDERER_CA
 }
@@ -186,9 +194,10 @@ CommitChaincode
 
 # Approve chaincode - needs to be executed on ALL ORGS
 # peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
-# --channelID mychannel --name cert --version 1.0 \
+# --channelID mychannel --name cert --version 2.0 \
 # --package-id $PACKAGE_ID --sequence 1 \
-# --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+# --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+# --channel-config-policy Channel/Application/Endorsement
 
 # Check commit readiness after approving cc
 # peer lifecycle chaincode checkcommitreadiness --channelID mychannel \
@@ -198,9 +207,10 @@ CommitChaincode
 # Commit chaincode
 # peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
 # --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
-# --channelID mychannel --name cert --version 1.0 --sequence 1 \
+# --channelID mychannel --name cert --version 1.0 --sequence 2 \
 # --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-# --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
+# --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+# --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA
 
 # Query commited chaincode
 # peer lifecycle chaincode querycommitted --channelID mychannel --name cert --cafile $ORDERER_CA
@@ -212,6 +222,7 @@ CommitChaincode
 # -C mychannel -n cert \
 # --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
 # --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+# --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA \
 # -c '{"Args":[]}'
 
 
@@ -271,3 +282,16 @@ CommitChaincode
 # Peer0Org2 (Org2's admin) signs and updates the channel configuration
 # peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
 
+# On Peer0Org3 (Org3's admin), fetch the genesis block of the channel wanted to join
+# peer channel fetch 0 mychannel.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+
+# Join Org3 to the channel with the genesis block
+# peer channel join -b mychannel.block
+
+# Install chaincode onto the peers of all orgs (admin peers)
+# peer chaincode install -n cert -v 2.0 -l node -p ./contract
+
+# Upgrade the chaincode to the channel -> include Org3 in the endorsement policies -> leverage Org3's members to endorse transactions
+# peer chaincode upgrade -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n cert -v 2.0 -c '{"Args":["InitLedger"]}' -P "OR ('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
+
+# peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile $ORDERER_CA -C mychannel -n mycc -v 1.2 -c '{"Args":["init","a","100","b","200","c","300"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')"

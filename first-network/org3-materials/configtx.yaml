@@ -20,13 +20,13 @@ Organizations:
         Policies:
             Readers:
                 Type: Signature
-                Rule: "OR('OrdererMSP.member')"
+                Rule: "OR('Org3MSP.member')"
             Writers:
                 Type: Signature
-                Rule: "OR('OrdererMSP.member')"
+                Rule: "OR('Org3MSP.member')"
             Admins:
                 Type: Signature
-                Rule: "OR('OrdererMSP.admin')"
+                Rule: "OR('Org3MSP.admin')"
             Endorsement:
                 Type: Signature
                 Rule: "OR('Org3MSP.peer')"
