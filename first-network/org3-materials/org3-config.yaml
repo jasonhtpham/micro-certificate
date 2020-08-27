@@ -1,0 +1,13 @@
+PeerOrgs:
+- Name: Org3
+  Domain: org3.example.com
+  EnableNodeOUs: true
+#--------------
+# Number of nodes/peers
+  Template:
+   Count: 2
+   SANS:
+    - "localhost"
+# Number of non-admin users
+  Users:
+   Count: 1
