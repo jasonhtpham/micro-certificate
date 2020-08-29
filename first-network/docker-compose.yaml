@@ -114,16 +114,16 @@ services:
     networks:
       - test
 
-  couchdb3:
-    container_name: couchdb3
-    image: hyperledger/fabric-couchdb
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 8984:5984
-    networks:
-      - test
+  # couchdb3:
+  #   container_name: couchdb3
+  #   image: hyperledger/fabric-couchdb
+  #   environment:
+  #     - COUCHDB_USER=
+  #     - COUCHDB_PASSWORD=
+  #   ports:
+  #     - 8984:5984
+  #   networks:
+  #     - test
 
   peer0.org1.example.com:
     container_name: peer0.org1.example.com
