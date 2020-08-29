@@ -18,8 +18,8 @@ services:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-output/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ./crypto-output/peerOrganizations/org1.example.com/tlsca/:/etc/hyperledger/fabric-ca-server-tls
+      - ./organizations/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./organizations/peerOrganizations/org1.example.com/tlsca/:/etc/hyperledger/fabric-ca-server-tls
     container_name: ca.org1.example.com
     hostname: ca.org1.example.com
     networks:
@@ -39,8 +39,8 @@ services:
       - "8054:7054"
     command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
     volumes:
-      - ./crypto-output/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-      - ./crypto-output/peerOrganizations/org2.example.com/tlsca/:/etc/hyperledger/fabric-ca-server-tls
+      - ./organizations/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./organizations/peerOrganizations/org2.example.com/tlsca/:/etc/hyperledger/fabric-ca-server-tls
     container_name: ca.org2.example.com
     hostname: ca.org2.example.com
     networks:
@@ -78,8 +78,8 @@ services:
       - test
     volumes:
       - ./channel-artefacts/genesis.block:/var/hyperledger/orderer/genesis.block
-      - ./crypto-output/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
-      - ./crypto-output/ordererOrganizations/example.com/orderers/orderer.example.com/tls:/var/hyperledger/orderer/tls
+      - ./organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
+      - ./organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls:/var/hyperledger/orderer/tls
 
   couchdb0:
     container_name: couchdb0
@@ -164,8 +164,8 @@ services:
     ports:
       - 7051:7051
     volumes:
-      - ./crypto-output/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/crypto/peer/msp
-      - ./crypto-output/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/crypto/peer/tls
+      - ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/crypto/peer/msp
+      - ./organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/crypto/peer/tls
       - /var/run/:/host/var/run/
       - ./channel-artefacts/:/etc/hyperledger/channel/
     networks:
@@ -206,8 +206,8 @@ services:
     ports:
       - 8051:8051
     volumes:
-      - ./crypto-output/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/crypto/peer/msp
-      - ./crypto-output/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/crypto/peer/tls
+      - ./organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/crypto/peer/msp
+      - ./organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/crypto/peer/tls
       - /var/run/:/host/var/run/
       - ./channel-artefacts/:/etc/hyperledger/channel/
     networks:
@@ -248,8 +248,8 @@ services:
     ports:
       - 9051:9051
     volumes:
-      - ./crypto-output/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/crypto/peer/msp
-      - ./crypto-output/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/crypto/peer/tls
+      - ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/crypto/peer/msp
+      - ./organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/crypto/peer/tls
       - /var/run/:/host/var/run/
       - ./channel-artefacts/:/etc/hyperledger/channel/
     networks:
@@ -290,8 +290,8 @@ services:
 #    ports:
 #      - 10051:10051
 #    volumes:
-#      - ./crypto-output/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/crypto/peer/msp
-#      - ./crypto-output/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/crypto/peer/tls
+#      - ./organizations/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/crypto/peer/msp
+#      - ./organizations/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/crypto/peer/tls
 #      - /var/run/:/host/var/run/
 #      - ./channel-artefacts/:/etc/hyperledger/channel/
 #    networks:

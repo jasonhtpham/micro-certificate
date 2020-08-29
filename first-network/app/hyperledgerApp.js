@@ -34,7 +34,7 @@ class HyperledgerApp {
         try {
             if (!wallet) {
                 // load the network configuration
-                const ccpPath = path.resolve(__dirname, '..', '..', 'test-network', 'organizations', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
+                const ccpPath = path.resolve(__dirname, '..', 'crypto-output', 'peerOrganizations', 'org1.example.com', 'connection-org1.json');
                 const fileExists = fs.existsSync(ccpPath);
                 if (!fileExists) {
                     throw new Error(`no such file or directory: ${ccpPath}`);
@@ -80,8 +80,8 @@ class HyperledgerApp {
                     // Initialize the chaincode by calling its InitLedger function
                     // console.log('Submit Transaction: InitLedger to create the very first cert');
                     // await contract.submitTransaction('InitLedger');
-            } catch (err) {
-                console.log(err);
+                } catch (err) {
+                    console.log(err);
                 }
             }
 
