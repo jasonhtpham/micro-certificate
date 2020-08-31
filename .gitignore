@@ -1,20 +1,13 @@
-# Emacs backup files
-*~
-*#
-.#*
-# Vim file artifacts
-.*.sw*
-# installed platform-specific binaries
-/bin
-/config
-.DS_Store
-.project
-# omit Go vendor directories
-vendor/
-.vscode
-.gradle
-.idea
-# Dependency directories
-node_modules/
-# Ignore Gradle build output directory
-build
+../micro-certificate/
+
+log.txt
+cert.tar.gz
+mychannel.block
+
+config.json
+config.pb
+
+config_block.pb
+
+modified_config.*
+org3_update.*
