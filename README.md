@@ -69,8 +69,10 @@ peer channel update -o localhost:7050 --ordererTLSHostnameOverride orderer.examp
 Repeat the same procedures to update other organizations' anchor peers.
 
 ---
+
 Up to this step, we should have a channel with 2 organizations org1 and org2 joined with their peers. Next steps will install the chaincode on peers.  
 These steps are executed using mostly `peer lifecycle chaincode` commands and some `peer chaincode` commands. Find out more [here](https://hyperledger-fabric.readthedocs.io/en/release-2.0/commands/peerlifecycle.html).
+
 ---
 
 ### - Step 5: Package the chaincode
@@ -137,5 +139,98 @@ peer chaincode invoke -o localhost:7050 \
 We now have a basic network with 2 organizations up and running. Next section will look into adding a new organization into the channel.
 
 ## Adding new organization using configtxlator
+These are the steps after a new configuration proto buffer (.pb) has been ready to be signed by the peers in the channel. The file `org3_update_in_envelope.pb` has been derived from configuration modifying processes. The processes were adding org3's configuration into the channel's most recent configuration block.
+
+### - Step 1: Sign the new configuration block
+Now, Peer0Org1 (Org1's admin) will sign the updated configuration (endorse this new channel configuration block):
+
+```bash
+# Make sure peer0Org1 variables are exported as CORE_PEER
+peer channel signconfigtx -f org3_update_in_envelope.pb
+```
+
+### - Step 2: Update the channel configuration
+Then, we also need signature from Org2. Peer0Org2 (Org2's admin) will sign and update the channel configuration at once. Updating the channel will also have the peer's signature included in the transaction:
+
+```bash
+# CORE_PEER variables should be storing peer0Org2 before execute this command
+peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+```
+After successfully executing this command, Org3 should be recognized in `mychannel` configuration, however, Org3 is not in the channel yet. We still have to join its peers into the channel like we did with Org1 and Org2.
+
+### - Step 3: Fetch genesis block to join the new organization into the channel
+If any peer wants to join a channel, they have to have the channel's genesis block so that the new peer's blockchain can be updated. On Peer0Org3 (Org3's admin), fetch the genesis block of `mychannel`
+
+```bash
+peer channel fetch 0 mychannel.block -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+```
+
+Expect to receive block 0 in the terminal and a file `mychannel.block` is now available in the current directory.
+
+### Step 4: Join new organization's peer to the channel
+Join Org3 to the channel with the genesis block derived from the previous step:
+
+```bash
+peer channel join -b mychannel.block
+```
+Org3 should be now joined into `mychannel`. Check this by execute this command (on peer0Org3):
+```bash
+peer channel list
+# mychannel should be listed in the response
+```
+
+### Step 5: Install chaincode on new organization's peer
+Org3 is in the channel, however, in order for it to endorse chaincode transactions in the channel we have to have the chaincode installed and invokable on Org3's peer as well. Install the chaincode (the same chaincode installed on Org1 and Org2) onto peer0Org3 using `peer lifecycle chaincode` command:
+```bash
+peer lifecycle chaincode install cert.tar.gz
+```
+The chaincode should be now installed on peer0Org3. The channel will now require Org3 to approve the chaincode, execute this command to check commit readiness of the chaincode:
+```bash
+# The sequence flag from now on should be specified with 2 as we are updating the definitions of the chaincode the second time on the channel
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME \
+    --name cert --version 1.0 --sequence 2 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --output json
+```
+The response will show 3 Orgs with `false` values next to them. Therefore, we will approve the chaincode on all Orgs just like we did when we bring up the basic network.
+
+### Step 6: All organizations need to approve the installed chaincode
+Each organization has to approve the chaincode with the sequence flag of 2:
+
+```bash
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+    --channelID $CHANNEL_NAME --name cert --version 1.0 \
+    --package-id $PACKAGE_ID --sequence 2 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+```
+Execute this command on each organizations and check commit readiness again with the above command:
+
+```bash
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME \
+    --name cert --version 1.0 --sequence 2 \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --output json
+```
+The result should now show 3 `true`.
+
+### - Step 7: Commit the definitions of the chaincode
+Now the chaincode definitions should be ready to commit:
+
+```bash
+# Again, make sure sequence flag is 2
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
+    --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+    --channelID $CHANNEL_NAME --name cert --version 1.0 --sequence 2 \
+    --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
+    --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA
+```
+Now, the chaincode is now ready to be invoke and query.
 
 ## Problem Troubleshooting
+1. If the terminal says a flag in a command is empty or cannot access `msp`, `cert` file. Check the gloabl variables if they are exported. Use this command to check global variables' value:
+
+```bash
+echo $VARIABLE_NAME
+# For example: echo $CORE_PEER_LOCALMSPID should return the path to the msp file.
+```
+
+2. If the 
