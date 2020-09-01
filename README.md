@@ -82,7 +82,7 @@ We should package our chaincode for easy instalation. This can be done by any pe
 peer lifecycle chaincode package cert.tar.gz --path ./contract --lang node --label cert_1
 ```
 We should have a `cert.tar.gz` file created in the current directory.
-### - Step 6: install chaincode on peers
+### - Step 6: Install chaincode on peers
 Now, we have a chaincode package ready to be installed. Again, make sure we are in correct peer's bash CLI by exporting correct variables to install chaincode (assuming we are in peer0.Org1):
 
 ```bash
@@ -93,7 +93,7 @@ Set other peers' variables as CORE_PEER and repeat the same command to install c
 export PACKAGE_ID=cc_version:<random id string>
 ```
 
-### - Step 7: approve the installed chaincode
+### - Step 7: Approve the installed chaincode
 All organizations on the channel have to approve the chaincode before it can be committed. Therefore, on each peer, approve the chaincode using following command:
 
 ```bash
@@ -134,7 +134,7 @@ peer chaincode invoke -o localhost:7050 \
     -C mychannel -n cert \
     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-    -c '{"Args":["GetAllCerts"]}'
+    -c '{"Args":[]}'
 ```
 We now have a basic network with 2 organizations up and running. Next section will look into adding a new organization into the channel.
 
@@ -159,6 +159,12 @@ peer channel update -f org3_update_in_envelope.pb -c $CHANNEL_NAME -o localhost:
 After successfully executing this command, Org3 should be recognized in `mychannel` configuration, however, Org3 is not in the channel yet. We still have to join its peers into the channel like we did with Org1 and Org2.
 
 ### - Step 3: Fetch genesis block to join the new organization into the channel
+Before fetching the genesis block for Org3, we need to bring up the Org3's docker images. Bringing up Org3's CA and peers with couchdb by executing this command:
+
+```bash
+docker-compose -f org3-materials/docker-compose-ca-org3.yaml -f org3-materials/docker-compose-couch-org3.yaml up -d
+```
+
 If any peer wants to join a channel, they have to have the channel's genesis block so that the new peer's blockchain can be updated. On Peer0Org3 (Org3's admin), fetch the genesis block of `mychannel`
 
 ```bash
@@ -233,4 +239,8 @@ echo $VARIABLE_NAME
 # For example: echo $CORE_PEER_LOCALMSPID should return the path to the msp file.
 ```
 
-2. If the 
+2. If the terminal returns the error saying it cannot communicate with the host on behalf of which we are trying to execute the command, we should check our dockers if the host's docker is up and running by this coomand:
+
+```bash
+docker ps
+```
