@@ -226,10 +226,94 @@ peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride o
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
     --channelID $CHANNEL_NAME --name cert --version 1.0 --sequence 2 \
     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
+    --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
     --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA
 ```
 Now, the chaincode is now ready to be invoke and query.
+
+---
+Using `configtxlator` to update configuration (add organization), 2 ways to use `configtxlator` are shown in the following section including using the binary and posting request to the configtxlator server:  
+
+If we want to use the configtxlator server, we need to start it up and save its URL:
+```bash
+# Start configtxlator REST server:
+configtxlator start &
+
+# Set URL of configuration translator service for further use, the server is normally started on port 7059
+CONFIGTXLATOR_URL=http://127.0.0.1:7059
+```
+We will also need a tool which help us with modifying json files. We will use `jq`:
+```bash
+# Different command in different environment 
+apt update \ apt install jq
+
+# apk update \ apk add jq
+```
+Then we are good to go and update the channel with a new organisation.
+
+- Fetch most recent config block
+```bash
+peer channel fetch config config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com -c $CHANNEL_NAME --tls --cafile $ORDERER_CA
+```
+
+- Convert config block into json
+```bash
+# Using binary
+# configtxlator proto_decode --input config_block.pb --type common.Block | jq .data.data[0].payload.data.config > config.json
+# OR
+curl -X POST --data-binary @config_block.pb "$CONFIGTXLATOR_URL/protolator/decode/common.Block" | jq .data.data[0].payload.data.config > config_block.json
+```
+
+- Add org3 MSP info into the channel config
+```bash
+jq -s '.[0] * {"channel_group":{"groups":{"Application":{"groups": {"Org3MSP":.[1]}}}}}' config.json ./channel-artefacts/org3.json > modified_config.json
+```
+
+- Re-decode the json files to calculate delta
++ config.json
+```bash
+# Using binary
+# configtxlator proto_encode --input config.json --type common.Config --output config.pb
+# OR
+curl -X POST --data-binary @config.json "$CONFIGTXLATOR_URL/protolator/encode/common.Config" > config.pb
+```
++ modified_config.json
+```bash
+# Using binary
+# configtxlator proto_encode --input modified_config.json --type common.Config --output modified_config.pb
+# OR
+curl -X POST --data-binary @modified_config.json "$CONFIGTXLATOR_URL/protolator/encode/common.Config" > modified_config.pb
+```
+
+- Calculate the delta
+```bash
+# Using binary
+# configtxlator compute_update --channel_id $CHANNEL_NAME --original config.pb --updated modified_config.pb --output org3_update.pb
+# OR
+curl -X POST -F channel=$CHANNEL_NAME -F "original=@config.pb" -F "updated=@modified_config.pb" "${CONFIGTXLATOR_URL}/configtxlator/compute/update-from-configs" > org3_update.pb
+```
+
+- Parse the delta file back into JSON to wrap it with the header
+```bash
+# Using binary
+# configtxlator proto_decode --input org3_update.pb --type common.ConfigUpdate | jq . > org3_update.json
+# OR
+curl -X POST --data-binary @org3_update.pb "$CONFIGTXLATOR_URL/protolator/decode/common.ConfigUpdate" | jq . > org3_update.json
+```
+
+- Wrap the JSON file wit header
+```bash
+echo '{"payload":{"header":{"channel_header":{"channel_id":"mychannel", "type":2}},"data":{"config_update":'$(cat org3_update.json)'}}}' | jq . > org3_update_in_envelope.json
+```
+
+- Encode the envelope back into .pb format
+```bash
+# Using binary
+# configtxlator proto_encode --input org3_update_in_envelope.json --type common.Envelope --output org3_update_in_envelope.pb
+# OR
+curl -X POST --data-binary @org3_update_in_envelope.json "$CONFIGTXLATOR_URL/protolator/encode/common.Envelope" > org3_update_in_envelope.pb
+```
+Now we have an updated channel config block that is ready to be implemented.
 
 ## Problem Troubleshooting
 1. If the terminal says a flag in a command is empty or cannot access `msp`, `cert` file. Check the gloabl variables if they are exported. Use this command to check global variables' value:
