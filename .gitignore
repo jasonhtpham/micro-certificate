@@ -1,4 +1,4 @@
-../micro-certificate/
+node-modules/
 
 log.txt
 cert.tar.gz
@@ -11,3 +11,5 @@ config_block.pb
 
 modified_config.*
 org3_update.*
+
+package-lock.json
