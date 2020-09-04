@@ -32,14 +32,6 @@ server.use(express.static(__dirname + '/public'));
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 
-/*
-    BUG!!!!
-    The client side browser (html + jquery) reloading will cause the list of users to be blank
-
-    Cause:
-    After the first call to the /registeredUsers endpoint, the browser will only receives newly added user (if available)
-*/
-
 
 // let lastUpdateEntries = 0; used for updating new added users
 
@@ -71,22 +63,13 @@ const newUsers = await client.db("firstdb").collection("Users").find().skip(pars
     res.end()
 */
 
-server.get('/addCert', (req,res) => {
-    const {firstName, lastName} = req.query;
-
-    data = {
-        firstName,
-        lastName
-    }
-
-    res.send(data)
-})
-
+// An endpoint returns all certificates on the ledger
 server.get('/getAllCerts', async (req, res) => {
     const certs = await hyperledgerApp.GetAllCerts();
     res.send(certs);
 })
 
+// Create certificates with information filled in the form
 server.post(
     '/createCert',
     [
@@ -136,6 +119,7 @@ server.post(
     }
 )
 
+// An endpoint to return a confirmation of a created certificate
 server.get('/createCert', (req, res) => {
     // console.log(req.session.createCert);
     const errors = req.session.createCert ? req.session.createCert.errors : false;
@@ -156,6 +140,7 @@ produceCertId = (firstName, lastName, unitCode) => {
     return certId;
 }
 
+// An endpoint returns certificates based on the given name
 server.get('/getCertByOwner', async (req, res) => {
     const { firstName, lastName } = req.query;
 
@@ -166,6 +151,7 @@ server.get('/getCertByOwner', async (req, res) => {
     res.send(certs);
 })
 
+// An endpoint returns history of a certificate
 server.get('/getCertHistory', async (req, res) => {
     const { certId } = req.query;
 

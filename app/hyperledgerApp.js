@@ -47,8 +47,6 @@ class HyperledgerApp {
                 console.log(`Wallet path: ${walletPath}`);
         
         
-                // Steps:
-                // Note: Steps 1 & 2 need to done only once in an app-server per blockchain network
                 // 1. register & enroll admin user with CA, stores admin identity in local wallet
                 await enrollAdmin.EnrollAdminUser();
         
@@ -87,6 +85,8 @@ class HyperledgerApp {
 
             if (wallet && contract) {
                 console.log('Chaincode is ready to be invoked');
+            } else {
+                throw new Error("Cannot connect with Fabric")
             }
         } catch (err) {
             console.log(err);

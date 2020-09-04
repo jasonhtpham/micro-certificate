@@ -1,9 +1,3 @@
-// const MongoClient = require('mongodb').MongoClient;
-
-// // Load the database object
-// const uri = "mongodb+srv://dbUser:dbUser@hyperledgercertificate.hgp6r.mongodb.net/firstdb?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
 $(document).ready(function() {
     $('.collapsible').collapsible();
 
@@ -55,9 +49,7 @@ $(document).ready(function() {
         }
     }
 
-    /**
-     * Summary: clear all values in the page's forms.
-     */
+    // Clear all values in the page's forms
     clearValues = () => {
         $('#firstName').val('');
         $('#lastName').val('');
@@ -70,12 +62,15 @@ $(document).ready(function() {
     }
 
 
+
+    // A func returns all certificates when the button is clicked
     $('#getAllCertsBtn').click( () => {
         $.get('/getAllCerts', (certs) => {
             alert(`Certificates on the ledger:\n${certs}`);
         })
     })
 
+    // A func create certificate when the form is submitted
     $('#create-cert-form').submit( (event) => {
         $('.progress').css('display', 'block');
         event.preventDefault();
@@ -94,8 +89,10 @@ $(document).ready(function() {
             credit
         }
 
+        // Post data to server to create certificate
         let posting = $.post('/createCert', data, (result) => {
 
+            // Alert the confirmation if the certificate is successfully created
             if (result.certId) {
                 clearValues();
                 $('.error-msg').empty()
@@ -104,6 +101,7 @@ $(document).ready(function() {
 
             }
 
+            // Display errors (if any) to inform users
             if (result.error) {
                 $.get('/createCert', (errors) => {
                     $('.error-msg').empty()
@@ -120,12 +118,11 @@ $(document).ready(function() {
         })
 
         posting.done(() => {
-            console.log('DONE');
             $('.progress').css('display', 'none')
         })
     });
 
-
+    // A func returns certificates by name when the button is clicked
     $('#getCertByOwnerBtn').click( () => {
         const firstName = $('#firstNameToQuery').val();
         const lastName = $('#lastNameToQuery').val();
@@ -142,6 +139,7 @@ $(document).ready(function() {
         })
     });
 
+    // A func returns a certificate's history when the button is clicked
     $('#getCertHistoryBtn').click( () => {
         const certId = $('#certId').val();
 
