@@ -5,30 +5,9 @@
 // const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 $(document).ready(function() {
-    console.log('Document ready')
-
-    
     $('.collapsible').collapsible();
-    
 
-    /**
-     * === /registeredUsers ===
-     * 
-     * Summary: Get registered users from the database.
-     * 
-     * Description: HTMLElement which is a list users is appended into the page. setInterval() was added initially to provide responsive users update.
-     * But this caused a bug of inconsitent states in the backend and the frontend, thus, was commented out.
-     * 
-     * @see /registeredUsers in ../server.js
-     * 
-     * @fires addName() when any buttons are clicked
-     * 
-     * @param {Object} users returned from the database
-     * 
-     * 
-     */
-
-    // setInterval( () => {
+    // A variable checking to check if it is the first call to registeredUsers endpoint
     $.get('/registeredUsers', (users) => {
         $.each(users, (index, userObj) => {
             $('.collapsible').append(
@@ -45,12 +24,7 @@ $(document).ready(function() {
                 </li>`);
         });
     })
-    // },1000)
-/*
-<a href="#userList" onclick="addName(event.target.innerText)" class="collection-item" id=${userObj._id}>
-                        ${userObj.firstName} ${userObj.lastName}
-                        </a>
-*/
+
      
     /**
      * Summary: A helper function adding names into forms according to users' input.

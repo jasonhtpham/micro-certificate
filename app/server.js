@@ -32,9 +32,6 @@ server.use(express.static(__dirname + '/public'));
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 
-let firstCall = true;
-let lastUpdateEntries = 0;
-
 /*
     BUG!!!!
     The client side browser (html + jquery) reloading will cause the list of users to be blank
@@ -43,9 +40,11 @@ let lastUpdateEntries = 0;
     After the first call to the /registeredUsers endpoint, the browser will only receives newly added user (if available)
 */
 
+
+// let lastUpdateEntries = 0; used for updating new added users
+
 server.get('/registeredUsers', async (req, res) => {
     try {
-        if (firstCall) {
             await client.connect();
 
             const users = await client.db("firstdb").collection("Users").find({}).toArray();
@@ -53,26 +52,24 @@ server.get('/registeredUsers', async (req, res) => {
             if (!users) {
                 throw new Error ("Nothing found from database");
             }
-            firstCall = false;
-            lastUpdateEntries = users.length;
+
+            // lastUpdateEntries = users.length;
             
             res.send(users);
-        } else {
-            const newUsers = await client.db("firstdb").collection("Users").find().skip(parseInt(lastUpdateEntries)).toArray();
-            if (newUsers) {
-                lastUpdateEntries += newUsers.length;
-                res.send(newUsers);
-            }
-            res.end()
-        }
     } catch (err) {
         console.log(`Problems connecting with database ${err}`);
-    } 
-    // finally {
-    //     await client.close();
-    //     console.log('Database connection closed');
-    // }
+    }
 })
+
+// Get new added users from the database
+/*
+const newUsers = await client.db("firstdb").collection("Users").find().skip(parseInt(lastUpdateEntries)).toArray();
+    if (newUsers) {
+        lastUpdateEntries += newUsers.length;
+        res.send(newUsers);
+    }
+    res.end()
+*/
 
 server.get('/addCert', (req,res) => {
     const {firstName, lastName} = req.query;
@@ -114,30 +111,30 @@ server.post(
             .trim()
             .isInt({min : 0}, {max : 5})
             .withMessage('Credit point is required')
-    ], 
-async (req, res) => {
-    // console.log(req.body);
-    const errors = validationResult(req);
-    const result = {};
+    ], async (req, res) => {
+        // console.log(req.body);
+        const errors = validationResult(req);
+        const result = {};
 
-    if (!errors.isEmpty()) {
-        req.session.createCert = {
-            errors : errors.array(),
-        };
-        result.error = 'Errors!';
-        return res.send(result);
+        if (!errors.isEmpty()) {
+            req.session.createCert = {
+                errors : errors.array(),
+            };
+            result.error = 'Errors!';
+            return res.send(result);
+        }
+
+        const { firstName, lastName, unitCode, grade, credit } = req.body;
+
+        const certId = produceCertId(firstName, lastName, unitCode);
+
+        const owner = firstName + ' ' + lastName;
+
+        await hyperledgerApp.CreateCert(certId, unitCode, grade, owner, credit);
+        result.certId = certId;
+        res.send(result);
     }
-
-    const { firstName, lastName, unitCode, grade, credit } = req.body;
-
-    const certId = produceCertId(firstName, lastName, unitCode);
-
-    const owner = firstName + ' ' + lastName;
-
-    await hyperledgerApp.CreateCert(certId, unitCode, grade, owner, credit);
-    result.certId = certId;
-    res.send(result);
-})
+)
 
 server.get('/createCert', (req, res) => {
     // console.log(req.session.createCert);

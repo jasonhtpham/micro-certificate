@@ -85,7 +85,7 @@ class HyperledgerApp {
                 }
             }
 
-            if (wallet) {
+            if (wallet && contract) {
                 console.log('Chaincode is ready to be invoked');
             }
         } catch (err) {
