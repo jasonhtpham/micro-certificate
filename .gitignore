@@ -1,4 +1,5 @@
 node-modules/
+client/node_modules/
 
 log.txt
 cert.tar.gz

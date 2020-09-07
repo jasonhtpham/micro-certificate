@@ -106,7 +106,7 @@ server.post(
             .trim()
             .isInt({min : 0}, {max : 5})
             .withMessage('Credit point is required')
-    ], async (req, res) => {
+    ], async (req, res, next) => {
         // console.log(req.body);
         const errors = validationResult(req);
         const result = {};
@@ -119,15 +119,46 @@ server.post(
             return res.send(result);
         }
 
-        const { firstName, lastName, unitCode, grade, credit } = req.body;
+        
+        try {
+            const { firstName, lastName, unitCode, grade, credit } = req.body;
 
-        const certId = produceCertId(firstName, lastName, unitCode);
+            const certId = produceCertId(firstName, lastName, unitCode);
 
-        const owner = firstName + ' ' + lastName;
+            const owner = firstName + ' ' + lastName;
 
-        await hyperledgerApp.CreateCert(certId, unitCode, grade, owner, credit);
-        result.certId = certId;
-        res.send(result);
+            // Receive response from the contract => either successful payload OR errors.
+            const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, grade, owner, credit);
+            
+            // Handle reponses accordingly
+            if (!contractResponse.errors) {
+                result.certId = certId;
+                res.send(result);
+            } else {
+                // console.log(contractResponse.responses[0].response.message);
+                let errorMessages = [];
+
+                // Get error messages from the responses of peers
+                contractResponse.responses.forEach(peerResponse => {
+                    const transactionErrors = {
+                        msg : peerResponse.response.message,
+                    };
+                        errorMessages.push(transactionErrors);
+                })
+
+                req.session.createCert = {
+                    errors : errorMessages,
+                };
+                result.error = 'Errors!';
+                return res.send(result);
+            }
+
+            
+        } catch (err) {
+            console.log(`There is an error on create certificate endpoint: ${err}`);
+        }
+        
+        
     }
 )
 
