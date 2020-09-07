@@ -69,6 +69,18 @@ server.get('/getAllCerts', async (req, res) => {
     res.send(certs);
 })
 
+// produce the certId to be stored on the ledger
+const produceCertId = (firstName, lastName, unitCode) => {
+    // certID = first name + last name + last 3 digits from the unitCode
+    const processedFirstName = firstName.trim().toLowerCase();
+    const processedLastName = lastName.trim().toLowerCase();
+    const processedUnitCode = unitCode.substring(3);
+
+    const certId = processedFirstName + processedLastName + processedUnitCode;
+    
+    return certId;
+}
+
 // Create certificates with information filled in the form
 server.post(
     '/createCert',
@@ -127,18 +139,6 @@ server.get('/createCert', (req, res) => {
 
     res.send(errors);
 })
-
-// produce the certId to be stored on the ledger
-produceCertId = (firstName, lastName, unitCode) => {
-    // certID = first name + last name + last 3 digits from the unitCode
-    const processedFirstName = firstName.trim().toLowerCase();
-    const processedLastName = lastName.trim().toLowerCase();
-    const processedUnitCode = unitCode.substring(3);
-
-    const certId = processedFirstName + processedLastName + processedUnitCode;
-    
-    return certId;
-}
 
 // An endpoint returns certificates based on the given name
 server.get('/getCertByOwner', async (req, res) => {
