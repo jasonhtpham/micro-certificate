@@ -33,6 +33,10 @@ server.use(express.static(__dirname + '/public'));
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
 
+server.get('/', (req, res) => {
+    res.sendFile('./public/index.html');
+})
+
 
 // let lastUpdateEntries = 0; used for updating new added users
 
@@ -100,10 +104,14 @@ const produceCertId = (firstName, lastName, unitCode) => {
 
 const userExistsCheck = async (firstName, lastName) => {
     try {
+        await client.connect();
+
         const firstNameExists = await client.db("firstdb").collection("Users").find( {"firstName" : firstName} ).toArray();
         const lastNameExists = await client.db("firstdb").collection("Users").find( {"lastName" : lastName} ).toArray();
 
-        if (firstNameExists.length !== 0 && lastNameExists.length !== 0) {
+        if ((firstNameExists.length !== 0) && 
+            (lastNameExists.length !== 0) && 
+            (firstNameExists[0]._id.toString() === lastNameExists[0]._id.toString()) ) {
             return true;
         } else {
             return false;
