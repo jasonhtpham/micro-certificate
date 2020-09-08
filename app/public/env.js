@@ -132,9 +132,9 @@ $(document).ready(function() {
             lastName
         }
 
-        $.get('/getCertByOwner', data, (certs) => {
+        $.get('/getCertByOwner', data, (result) => {
             // console.log('Certificates are returned successfully!');
-            $('#certs-by-owner').html(certs);
+            $('#certs-by-owner').html(result);
             clearValues();
         })
     });
