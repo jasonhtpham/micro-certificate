@@ -1,17 +1,12 @@
 const express = require('express');
 const HyperledgerApp = require('./hyperledgerApp.js');
 const { IdentityProviderRegistry } = require('fabric-network');
-const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require ('body-parser');
 const path = require('path');
 const { check, validator, validationResult } = require('express-validator');
 const cookieSession = require('cookie-session');
 const createError = require('http-errors');
-
-
-// Load the database object
-const uri = "mongodb+srv://dbUser:dbUser@hyperledgercertificate.hgp6r.mongodb.net/firstdb?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const routes = require('./routes')
 
 // Initialize the server object
 const server = express();
@@ -19,6 +14,10 @@ const PORT = 3000;
 
 // Communicate with the chaincode by create a hyperledgerApp object
 const hyperledgerApp = new HyperledgerApp();
+
+// Import UserHelper from helpers
+const UserHelper = require('./helpers/UserHelper');
+const userHelper = new UserHelper;
 
 server.set('trust proxy', 1);
 
@@ -29,21 +28,18 @@ server.use(cookieSession({
 
 server.use(express.static(__dirname + '/public'));
 
+server.use('/test', routes());
+
 // bodyParse setup
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
-
-server.get('/', (req, res) => {
-    res.sendFile('./public/index.html');
-})
 
 
 // let lastUpdateEntries = 0; used for updating new added users
 
 server.get('/registeredUsers', async (req, res, next) => {
     try {
-        await client.connect();
-        const usersList = await getUsersList();
+        const usersList = await userHelper.getUsersList();
         // lastUpdateEntries = users.length;
         
         return res.send(usersList);
@@ -53,20 +49,6 @@ server.get('/registeredUsers', async (req, res, next) => {
         return next(err);
     }
 })
-
-const getUsersList = async () => {
-    try {
-        const usersList = await client.db("firstdb").collection("Users").find({}).toArray();
-
-        if (!usersList) {
-            throw new Error ("Nothing found from database");
-        }
-
-        return usersList;
-    } catch (err) {
-        console.log(`Problems getting users from database ${err}`);
-    } 
-}
 
 // Get new added users from the database
 /*
@@ -167,7 +149,7 @@ server.post(
 
             // Check if entered user exists (registered)            
     
-            const userExists = await userExistsCheck(firstName, lastName);
+            const userExists = await userHelper.userExistsCheck(firstName, lastName);
             
             // Execute the transaction if the user does exist
             if (userExists) {
