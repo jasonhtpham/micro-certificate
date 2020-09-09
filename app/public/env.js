@@ -72,8 +72,8 @@ $(document).ready(function() {
 
     // A func create certificate when the form is submitted
     $('#create-cert-form').submit( (event) => {
-        $('.progress').css('display', 'block');
         event.preventDefault();
+        $('.progress').css('display', 'block');
 
         const firstName = $('#firstName').val();
         const lastName = $('#lastName').val();

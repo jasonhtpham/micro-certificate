@@ -34,8 +34,8 @@ class UserHelper {
     /**
      * @description Check if the input user exists in the registered users database.
      * 
-     * @param {string} firstName first name to check against data in the database. The parameter is generated from user's input in create-cert-form.
-     * @param {string} lastName last name to check against data in the database. The parameter is generated from user's input in create-cert-form.
+     * @param {string} firstName first name to check against data in the database. The parameter is derived from user's input in frontend forms.
+     * @param {string} lastName last name to check against data in the database. The parameter is derived from user's input in frontend forms.
      * 
      * @returns {boolean} The boolean value confirming that the user exists in the database (registered). True is returned if the user exists, and False is returned if doesn't.
      */
