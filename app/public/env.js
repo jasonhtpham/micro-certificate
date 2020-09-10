@@ -66,6 +66,9 @@ $(document).ready(function() {
     // A func returns all certificates when the button is clicked
     $('#getAllCertsBtn').click( () => {
         $.get('/getAllCerts', (certs) => {
+            if (!certs) {
+                alert(`There is no certificate found!`);
+            }
             alert(`Certificates on the ledger:\n${certs}`);
         })
     })
@@ -123,7 +126,7 @@ $(document).ready(function() {
     });
 
     // A func returns certificates by name when the button is clicked
-    $('#getCertByOwnerBtn').click( () => {
+    $('#getCertsByOwnerBtn').click( () => {
         const firstName = $('#firstNameToQuery').val();
         const lastName = $('#lastNameToQuery').val();
 
@@ -132,7 +135,7 @@ $(document).ready(function() {
             lastName
         }
 
-        $.get('/getCertByOwner', data, (result) => {
+        $.get('/getCertsByOwner', data, (result) => {
             // console.log('Certificates are returned successfully!');
             $('#certs-by-owner').html(result);
             clearValues();

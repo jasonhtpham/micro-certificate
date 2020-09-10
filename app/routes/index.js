@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 
 const createCertRoute = require('./createCert');
+const getAllCertsRoute = require('./getAllCerts');
+const getCertHistoryRoute = require('./getCertHistory');
+const getCertsByOwnerRoute = require('./getCertsByOwner');
+
 
 // Import UserHelper from helpers
 const UserHelper = require('../helpers/UserHelper');
@@ -22,6 +26,23 @@ module.exports = params => {
     });
 
     router.use('/createCert', createCertRoute(params));
+    router.use('/getAllCerts', getAllCertsRoute(params));
+    router.use('/getCertHistory', getCertHistoryRoute(params));
+    router.use('/getCertsByOwner', getCertsByOwnerRoute(params));
 
     return router;
 };
+
+
+
+
+
+// Get new added users from the database
+/*
+const newUsers = await client.db("firstdb").collection("Users").find().skip(parseInt(lastUpdateEntries)).toArray();
+    if (newUsers) {
+        lastUpdateEntries += newUsers.length;
+        res.send(newUsers);
+    }
+    res.end()
+*/
