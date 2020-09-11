@@ -1,5 +1,7 @@
-node-modules/
+/node-modules/
 client/node_modules/
+frontend/node_modules/
+
 
 log.txt
 cert.tar.gz
