@@ -7,7 +7,7 @@ const routes = require('./routes')
 
 // Initialize the server object
 const server = express();
-const PORT = 3000;
+const PORT = 5000;
 
 // Communicate with the chaincode by create a hyperledgerApp object
 const HyperledgerApp = require('./hyperledgerApp.js');
