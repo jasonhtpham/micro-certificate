@@ -73,7 +73,7 @@ module.exports = params => {
                 req.session.createCert = {
                     errors : errors.array(),
                 };
-                result.error = 'Errors!';
+                result.errors = errors.array();
                 return res.send(result);
             }
 
@@ -95,7 +95,7 @@ module.exports = params => {
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {
-                    result.certId = certId;
+                    result.sucess = certId;
                     return res.send(result);
                 } 
                 
@@ -115,7 +115,7 @@ module.exports = params => {
                     req.session.createCert = {
                         errors : errorMessages,
                     };
-                    result.error = 'Errors!';
+                    result.errors = errorMessages;
                     return res.send(result);
                 }
             } 
@@ -126,7 +126,7 @@ module.exports = params => {
                 req.session.createCert = {
                     errors : userNotExistsError,
                 };
-                result.error = 'Errors!';
+                result.errors = userNotExistsError;
                 return res.send(result);
             }
         } catch (err) {

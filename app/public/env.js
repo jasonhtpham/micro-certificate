@@ -96,16 +96,16 @@ $(document).ready(function() {
         let posting = $.post('/createCert', data, (result) => {
 
             // Alert the confirmation if the certificate is successfully created
-            if (result.certId) {
+            if (result.sucess) {
                 clearValues();
                 $('.error-msg').empty()
                 $('#form-error').css('display', 'none')
-                alert(`Certificate with ID ${result.certId} has been successfully created`);
+                alert(`Certificate with ID ${result.sucess} has been successfully created`);
 
             }
 
             // Display errors (if any) to inform users
-            if (result.error) {
+            if (result.errors) {
                 $.get('/createCert', (errors) => {
                     $('.error-msg').empty()
                     $('#form-error').css('display', 'block')

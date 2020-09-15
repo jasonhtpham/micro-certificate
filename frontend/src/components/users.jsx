@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Axios from 'axios'
 
 const BACKEND_API_URL = 'http://localhost:5000';
 
@@ -8,10 +9,15 @@ class Users extends Component {
     }
 
     componentDidMount = async () => {
-        const usersResponse = await fetch(`${BACKEND_API_URL}/registeredUsers`);
-        const usersArray = await usersResponse.json();
+        try {
+            const usersResponse = await Axios.get(`${BACKEND_API_URL}/registeredUsers`);
+            const usersArray = await usersResponse.data;
 
-        this.setState({users : usersArray});
+            this.setState({users : usersArray});
+        } catch (err) {
+            return err;
+        }
+        
     }
 
     render() { 
