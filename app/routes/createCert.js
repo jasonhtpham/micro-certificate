@@ -50,7 +50,9 @@ const produceCertId = (firstName, lastName, unitCode) => {
     // certID = first name + last name + last 3 digits from the unitCode
     const processedFirstName = firstName.trim().toLowerCase();
     const processedLastName = lastName.trim().toLowerCase();
-    const processedUnitCode = unitCode.substring(3);
+    
+    const lowerCaseUnitCode = unitCode.trim().toLowerCase();
+    const processedUnitCode = lowerCaseUnitCode.substring(3);
 
     const certId = processedFirstName + processedLastName + processedUnitCode;
     

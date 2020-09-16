@@ -71,7 +71,6 @@ class CertByUser extends Component {
                         Get Certificates
                     </button>
                 </form>
-                <p className="certs-by-owner-result" id="certs-by-owner"></p>
             </div>
         );
     }

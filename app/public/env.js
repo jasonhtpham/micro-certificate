@@ -137,7 +137,7 @@ $(document).ready(function() {
 
         $.get('/getCertsByOwner', data, (result) => {
             // console.log('Certificates are returned successfully!');
-            $('#certs-by-owner').html(result);
+            $('#certs-by-owner').html(result.certs);
             clearValues();
         })
     });

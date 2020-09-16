@@ -11,7 +11,7 @@ class NavBar extends Component {
                     <ul id="nav-mobile" className="right hide-on-med-and-down">
                         <li> <NavLink to="/createCert"> Create Certificate </NavLink> </li>
                         <li> <NavLink to="/getCertByUser"> Get Certificates by User </NavLink> </li>
-                        <li> Get Certificate History </li>
+                        <li> <NavLink to="/getCertHistory"> Get Certificate History </NavLink> </li>
                     </ul>
                 </div>
             </nav>

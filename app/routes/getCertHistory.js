@@ -10,7 +10,7 @@ module.exports = params => {
             const { certId } = req.query;
 
             const certHistory = await hyperledgerApp.GetCertHistory(certId);
-        
+
             return res.send(certHistory);
         } catch (err) {
             console.log(`Error getting certificate's history: ${err}`);
