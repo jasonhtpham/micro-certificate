@@ -1,6 +1,7 @@
 import React from 'react';
 import NavBar from './components/navbar'
 import Users from './components/users'
+import {Route} from 'react-router-dom'
 import CreateCert from './components/createcert'
 import CertByUser from './components/certbyuser'
 
@@ -15,8 +16,8 @@ function App() {
         <NavBar />
         <div className="container">
           <Users />
-          <CreateCert />
-          <CertByUser />
+          <Route path="/createCert" component={CreateCert} />
+          <Route path="/getCertByUser" component={CertByUser} />
         </div>
     </React.Fragment>
     

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import {NavLink} from 'react-router-dom';
+
 class NavBar extends Component {
     render() { 
         return ( 
@@ -7,10 +9,9 @@ class NavBar extends Component {
                 <div className="nav-wrapper">
                     <a href="/" className="brand-logo">Hyperledger Certificate</a>
                     <ul id="nav-mobile" className="right hide-on-med-and-down">
-                        <li> <a className="waves-effect waves-light btn" id="" href='/'> Users </a> </li>
-                        <li> <a className="waves-effect waves-light btn" id="" href='/'> Create Certificate </a> </li>
-                        <li> <a className="waves-effect waves-light btn" id="" href='/'> Get Certificates by User </a> </li>
-                        <li> <a className="waves-effect waves-light btn" id="" href='/'> Get Certificate History </a> </li>
+                        <li> <NavLink to="/createCert"> Create Certificate </NavLink> </li>
+                        <li> <NavLink to="/getCertByUser"> Get Certificates by User </NavLink> </li>
+                        <li> Get Certificate History </li>
                     </ul>
                 </div>
             </nav>
