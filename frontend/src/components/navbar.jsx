@@ -6,7 +6,6 @@ class NavBar extends Component {
             <nav>
                 <div className="nav-wrapper">
                     <a href="/" className="brand-logo">Hyperledger Certificate</a>
-                    
                     <ul id="nav-mobile" className="right hide-on-med-and-down">
                         <li> <a className="waves-effect waves-light btn" id="" href='/'> Users </a> </li>
                         <li> <a className="waves-effect waves-light btn" id="" href='/'> Create Certificate </a> </li>

@@ -1,5 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const bodyParser = require ('body-parser');
+
+
+// bodyParse setup
+router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
 
 // Import UserHelper from helpers
 const UserHelper = require('../helpers/UserHelper');
@@ -20,9 +26,10 @@ module.exports = params => {
         
                 const certs = await hyperledgerApp.GetCertsByOwner(owner);
             
-                return res.send(certs);
+                return res.send({certs});
             } else {
-                return res.send("User not found");
+                const errors = { msg : "User not found" };
+                return res.send({errors});
             }
         } catch (err) {
             console.log(`Error getting certificates by owner: ${err}`);

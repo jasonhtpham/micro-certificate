@@ -14,9 +14,6 @@ class CreateCert extends Component {
     createCert = async (e) => {
         e.preventDefault();
         document.getElementById('form-error').style.display = 'none';
-        document.getElementsByClassName('progress')[0].style.display = 'none';
-
-        // document.getElementsByClassName('.progress').css('display', 'block');
 
         const firstName = e.target.firstName.value;
         const lastName = e.target.lastName.value;
