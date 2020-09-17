@@ -17,7 +17,7 @@ class CertHistory extends Component {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertHistory?certId=${certId}`)
 
             if ( result.data.length !== 0 ) {
-                console.log(result.data);
+                alert(`${JSON.stringify(result.data[0].TimeStamp)}`);
             } else {
                 throw Error("Certificate ID not found");
             }

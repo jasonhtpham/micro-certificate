@@ -7,7 +7,6 @@ const BACKEND_API_URL = 'http://localhost:5000';
 class CreateCert extends Component {
     state = {
         errorMessages : [],
-        sucess : false,
     };
 
     // A func create certificate when the form is submitted
@@ -42,8 +41,7 @@ class CreateCert extends Component {
 
             // The data with SUCCESS attribute which is the certID is returned if success.
             if (postingCertDetails.data.success) {
-                this.setState({ success : true});
-                alert(`A certificate has been successfully create with ID: ${postingCertDetails.data.success}`)
+                alert(`A certificate has been successfully create with ID: ${postingCertDetails.data.success}`);
             }
 
             // The data with ERRORS attribute is returned if there are any errors.

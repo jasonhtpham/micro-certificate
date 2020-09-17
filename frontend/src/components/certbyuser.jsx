@@ -21,7 +21,7 @@ class CertByUser extends Component {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertsByOwner?firstName=${firstName}&lastName=${lastName}`);
 
             if (result.data.certs) {
-                console.log(result.data.certs);
+                alert(`${result.data.certs}`);
                 // let certsArray = [];
 
                 // result.data.errors.forEach(cert => {

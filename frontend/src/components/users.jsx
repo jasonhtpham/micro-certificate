@@ -14,7 +14,7 @@ class Users extends Component {
     componentDidMount = async () => {
         try {
             const usersResponse = await Axios.get(`${BACKEND_API_URL}/registeredUsers`);
-            const usersArray = await usersResponse.data;
+            const usersArray = usersResponse.data;
 
             this.setState({users : usersArray});
         } catch (err) {

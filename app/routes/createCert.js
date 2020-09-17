@@ -97,7 +97,7 @@ module.exports = params => {
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {
-                    result.sucess = certId;
+                    result.success = certId;
                     return res.send(result);
                 } 
                 
