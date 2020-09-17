@@ -12,21 +12,20 @@ class CertHistory extends Component {
         e.preventDefault();
 
         const certId = e.target.certId.value;
-        console.log(certId);
 
         try {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertHistory?certId=${certId}`)
 
-            console.log(result.data)
-
-            if (result.data.certHistory) {
-                console.log(result.data.certHistory);
+            if ( result.data.length !== 0 ) {
+                console.log(result.data);
             } else {
                 throw Error("Certificate ID not found");
             }
 
         } catch (err) {
             return err;
+        } finally {
+            document.getElementById('get-cert-history-form').reset();
         }
     }
 
@@ -34,7 +33,7 @@ class CertHistory extends Component {
         return ( 
             <div className="get-cert-history-container">
                 <h3>Get Certificate's History</h3>
-                    <form id="get-cert-history" method="get" onSubmit={this.getCertHistory}>
+                    <form id="get-cert-history-form" method="GET" onSubmit={this.getCertHistory}>
                     <div className="input-field col s6">
                         <input placeholder="Certificate ID" id="certId" type="text" className="validate" />
                         <label htmlFor="certId">Certificate ID</label>

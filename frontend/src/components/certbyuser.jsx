@@ -7,7 +7,7 @@ const BACKEND_API_URL = 'http://localhost:5000';
 class CertByUser extends Component {
     state = {
         errorMessages: "",
-        certificates: []
+        // certificates: []
     }
 
     getCertByUser = async (e) => {
@@ -43,6 +43,8 @@ class CertByUser extends Component {
 
         } catch (err) {
             return err;
+        } finally {
+            document.getElementById('cert-by-user-form').reset();
         }
     }
 
@@ -67,7 +69,7 @@ class CertByUser extends Component {
                         <label htmlFor="lastNameToQuery">Last Name</label>
                     </div>
 
-                    <button className="btn waves-effect waves-light" type="submit" id="getCertsByOwnerBtn">
+                    <button className="btn waves-effect waves-light" autoFocus type="submit" id="getCertsByOwnerBtn">
                         Get Certificates
                     </button>
                 </form>

@@ -12,7 +12,7 @@ const myChaincodeName = 'cert';
 let wallet;
 let contract;
 
-function prettyJSONString(inputString) {
+const prettyJSONString = (inputString) => {
     return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
