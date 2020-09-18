@@ -7,10 +7,6 @@ import CertByUser from './components/certbyuser'
 import CertHistory from './components/certhistory'
 
 
-// import './App.css';
-// import Counters from './components/counters';
-
-
 function App() {
   return (
     <React.Fragment>

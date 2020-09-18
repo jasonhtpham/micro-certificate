@@ -48,29 +48,6 @@ class Users extends Component {
                     <ul className="collection" id="userList">
                         {this.state.users.map (user => (
                             <a href="#!" key={user._id} className="collection-item" onClick={this.handleUserClick}> {user.firstName} {user.lastName} </a>
-                            // <li key={user._id} className="collection-item" >
-
-                            //     <div className="row" style={{ textAlign : "center" }}>
-                            //         <div className="col s2" id="username" style={{ fontSize : "medium" }}>
-                            //             {user.firstName} {user.lastName}
-                            //         </div>
-
-                            //         {/* <div className="col s3 offset-s2">
-                            //             <button className="waves-effect waves-light btn-small" id="create-cert-btn" name={this.userName(user.firstName, user.lastName)} 
-                            //                 onClick={this.handleCreateCert} style={{ display : "none" }}>
-                            //                 <i className="material-icons left">add</i>Create Certificate
-                            //             </button>
-                            //         </div> */}
-
-                            //         <div className="col s2 offset-s5">
-                            //             <button className="waves-effect waves-light btn-small" id="get-cert-btn" name={this.userName(user.firstName, user.lastName)} 
-                            //                 onClick={this.handleAction}>
-                            //                 <i className="material-icons left">add</i>
-                            //             </button>
-                            //         </div>
-                            //     </div>
-
-                            // </li>
                         ))}
                     </ul>
 
