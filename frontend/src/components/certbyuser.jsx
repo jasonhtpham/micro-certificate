@@ -23,17 +23,16 @@ class CertByUser extends Component {
         try {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertsByOwner?firstName=${firstName}&lastName=${lastName}`);
 
-            // console.log(JSON.parse(result.data.certs));
 
             if (result.data.certs) {
-                // alert(`${result.data.certs}`);
 
+                // Parsing returned data from string into JSON
                 const certsList = JSON.parse(result.data.certs);
 
                 let certsArray = [];
 
+                // Taking each certificate out and push it in a temp array
                 certsList.forEach(cert => {
-                    // console.log(cert);
 
                     const certObj = {
                         key : cert.Key,
@@ -43,6 +42,7 @@ class CertByUser extends Component {
                     certsArray.push(certObj)
                 });
 
+                // Set the temp array above to be the certificates state
                 this.setState({ certificates:certsArray }, () => document.getElementsByClassName('progress')[0].style.display = 'none');
 
             } else {

@@ -17,14 +17,17 @@ class Collapsible extends Component {
     render() {
       return (
         <div>
-            <div onClick={(e)=>this.togglePanel(e)} style={{
+            <div onClick={ (e) => this.togglePanel(e) } style={{
                 cursor: 'pointer',
                 border: 'solid 1px #f2f2f2',
                 padding: '15px',
                 backgroundColor: '#26a69a',
-                color: '#FFF'
-            }}>
-                {this.props.title}</div>
+                color: '#FFF' }}>
+
+                {this.props.title}
+
+            </div>
+            
             {this.state.open ? (
                 <div style={{
                     cursor: 'pointer',
