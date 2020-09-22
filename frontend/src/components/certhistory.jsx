@@ -5,21 +5,25 @@ const BACKEND_API_URL = 'http://localhost:5000';
 
 class CertHistory extends Component {
     state = {
-
+        errorMessages : "",
+        certHistory : []
     };
 
     getCertHistory = async (e) => {
         e.preventDefault();
+        document.getElementById('certs-history-form-error').style.display = 'none';
 
         const certId = e.target.certId.value;
 
         try {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertHistory?certId=${certId}`)
 
-            if ( result.data.length !== 0 ) {
-                alert(`${JSON.stringify(result.data[0].TimeStamp)}`);
+
+            if ( result.data.certHistory ) {
+                const certHistory = JSON.parse(result.data.certHistory);
+                this.setState({certHistory}, () => document.getElementById('history-table').style.display = '');
             } else {
-                throw Error("Certificate ID not found");
+                this.setState({ errorMessages:result.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
             }
 
         } catch (err) {
@@ -33,7 +37,14 @@ class CertHistory extends Component {
         return ( 
             <div className="get-cert-history-container">
                 <h3>Get Certificate's History</h3>
-                    <form id="get-cert-history-form" method="GET" onSubmit={this.getCertHistory}>
+                <div className="card-panel red lighten-4" id="certs-history-form-error" style={{display: "none"}} >
+                    <span className="red-text text-darken-4">
+                        <ul className="error-list">
+                            {this.state.errorMessages}
+                        </ul>
+                    </span>
+                </div>
+                <form id="get-cert-history-form" method="GET" onSubmit={this.getCertHistory}>
                     <div className="input-field col s6">
                         <input placeholder="Certificate ID" id="certId" type="text" className="validate" />
                         <label htmlFor="certId">Certificate ID</label>
@@ -42,6 +53,31 @@ class CertHistory extends Component {
                         Get History
                     </button>
                 </form>
+
+                <table id="history-table" style={{display:"none"}}>
+                    <thead>
+                      <tr>
+                          <th>Second</th>
+                          <th>Nanos</th>
+                          <th>Value</th>
+                      </tr>
+                    </thead>
+            
+                    <tbody>
+                    {this.state.certHistory.map(history => (
+                      <tr key={history.TimeStamp.nanos}>
+                        <td>{history.TimeStamp.seconds}</td>
+                        <td>{history.TimeStamp.nanos}</td>
+                        <td>
+                            <p><b>Unit code:    </b> {history.Value.UnitCode}   </p>
+                            <p><b>Grade:        </b> {history.Value.Grade}      </p>
+                            <p><b>Credit point: </b> {history.Value.Credit}     </p>
+                        </td>
+                      </tr>
+                    ))}
+                    </tbody>
+
+                </table>
             </div>
         );
     }

@@ -92,9 +92,9 @@ class CertByUser extends Component {
                     {this.state.certificates.map(certificate => (
                         <Collapsible title={certificate.key} className="certificate" key={certificate.key}>
                             <div className="certificate-content">
-                                <p> <b>Unit Code:</b> {certificate.record.UnitCode} </p>
-                                <p> <b>Grade:</b> {certificate.record.Grade} </p>
-                                <p> <b>Credit Point(s):</b> {certificate.record.Credit} </p>
+                                <p> <b>Unit Code:       </b> {certificate.record.UnitCode}  </p>
+                                <p> <b>Grade:           </b> {certificate.record.Grade}     </p>
+                                <p> <b>Credit Point(s): </b> {certificate.record.Credit}    </p>
                             </div>
                         </Collapsible>
                     ))}
