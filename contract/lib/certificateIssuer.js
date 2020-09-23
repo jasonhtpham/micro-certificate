@@ -61,6 +61,7 @@ class CertificateIssuer extends Contract {
 
         // overwriting original cert with new cert
         const updatedCert = {
+            docType: 'certificate',
             ID: id,
             UnitCode: unitcode,
             Grade: grade,

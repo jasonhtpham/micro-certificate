@@ -84,7 +84,7 @@ module.exports = params => {
 
             // Check if entered user exists (registered)            
     
-            const userExists = await userHelper.userExistsCheck(firstName, lastName);
+            const userExists = userHelper.userExistsCheck(firstName, lastName);
             
             // Execute the transaction if the user does exist
             if (userExists) {
