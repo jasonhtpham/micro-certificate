@@ -37,28 +37,6 @@ const validations = [
         .withMessage('Credit point is required')
 ];
 
-/**
- * @description Produces an certificate ID which will be saved as Key in ledger database.
- * 
- * @param {string} firstName first name of the user. The parameter is derived from user's input in frontend forms.
- * @param {string} lastName last name of the user. The parameter is derived from user's input in frontend forms.
- * @param {string} unitCode unit code which the certificate certifies the user has completed. The parameter is derived from user's input in frontend forms.
- * 
- * @returns {string} A certificate string derived from the combination of the 3 params.
- */
-const produceCertId = (firstName, lastName, unitCode) => {
-    // certID = first name + last name + last 3 digits from the unitCode
-    const processedFirstName = firstName.trim().toLowerCase();
-    const processedLastName = lastName.trim().toLowerCase();
-    
-    const lowerCaseUnitCode = unitCode.trim().toLowerCase();
-    const processedUnitCode = lowerCaseUnitCode.substring(3);
-
-    const certId = processedFirstName + processedLastName + processedUnitCode;
-    
-    return certId;
-}
-
 module.exports = params => {
     const { hyperledgerApp } = params;
 
@@ -80,15 +58,13 @@ module.exports = params => {
             }
 
             // =====================================
-            const { firstName, lastName, unitCode, grade, credit } = req.body;
+            const { certId, firstName, lastName, unitCode, grade, credit } = req.body;
 
             // Check if entered user exists (registered)            
-    
             const userExists = userHelper.userExistsCheck(firstName, lastName);
             
             // Execute the transaction if the user does exist
             if (userExists) {
-                const certId = produceCertId(firstName, lastName, unitCode);
     
                 const owner = firstName + ' ' + lastName;
     

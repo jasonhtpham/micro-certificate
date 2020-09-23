@@ -5,6 +5,7 @@ import {Route} from 'react-router-dom'
 import CreateCert from './components/createcert'
 import CertByUser from './components/certbyuser'
 import CertHistory from './components/certhistory'
+import UpdateCert from './components/updatecert';
 
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
           <Route path="/createCert" component={CreateCert} />
           <Route path="/getCertByUser" component={CertByUser} />
           <Route path="/getCertHistory" component={CertHistory} />
-
+          <Route path="/updateCert" component={UpdateCert} />
         </div>
     </React.Fragment>
     
