@@ -131,6 +131,20 @@ class HyperledgerApp {
             console.log(`Error when get certificate's history': ${err}`);
         }
     }
+
+    UpdateCert = async (id, unitCode, grade, owner, credit) => {
+        console.log('Submit Transaction: UpdateCert() Update certificate');
+        try {
+            // Return the successful payload if the transaction is committed without errors
+            const result = await contract.submitTransaction('UpdateCert', id, unitCode, grade, owner, credit);
+            return prettyJSONString(result.toString());
+        } catch (err) {
+            console.log(`Error when create certificate: ${err}`);
+
+            // Return errors if any
+            return err;
+        }
+    }
 }
 
 module.exports = HyperledgerApp;

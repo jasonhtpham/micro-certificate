@@ -5,6 +5,7 @@ const createCertRoute = require('./createCert');
 const getAllCertsRoute = require('./getAllCerts');
 const getCertHistoryRoute = require('./getCertHistory');
 const getCertsByOwnerRoute = require('./getCertsByOwner');
+const updateCertRoute = require('./updateCert');
 
 
 // Import UserHelper from helpers
@@ -29,6 +30,8 @@ module.exports = params => {
     router.use('/getAllCerts', getAllCertsRoute(params));
     router.use('/getCertHistory', getCertHistoryRoute(params));
     router.use('/getCertsByOwner', getCertsByOwnerRoute(params));
+    router.use('/updateCert', updateCertRoute(params));
+
 
     return router;
 };
