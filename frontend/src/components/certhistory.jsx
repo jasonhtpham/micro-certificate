@@ -35,7 +35,7 @@ class CertHistory extends Component {
             }
 
         } catch (err) {
-            return err;
+            return err.message;
         } finally {
             document.getElementById('get-cert-history-form').reset();
         }

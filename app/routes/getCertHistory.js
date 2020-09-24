@@ -9,15 +9,21 @@ module.exports = params => {
         try {
             const { certId } = req.query;
 
-            const certHistory = await hyperledgerApp.GetCertHistory(certId);
+            if (certId) {
+                const certHistory = await hyperledgerApp.GetCertHistory(certId);
             
-            if (JSON.parse(certHistory).length === 0) {
-                // return res.status(404, ("Certificate ID not found"));
-                const errors = { msg : "Certificate ID not found" };
+                if (JSON.parse(certHistory).length === 0) {
+                    // return res.status(404, ("Certificate ID not found"));
+                    const errors = { msg : "Certificate ID not found" };
+                    return res.send({errors});
+                }
+
+                return res.send({certHistory});
+            } else {
+                const errors = { msg : "Certificate ID is required" };
                 return res.send({errors});
             }
 
-            return res.send({certHistory});
         } catch (err) {
             console.log(`Error getting certificate's history: ${err}`);
             return next(err);
