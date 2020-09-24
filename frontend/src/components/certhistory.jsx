@@ -21,7 +21,15 @@ class CertHistory extends Component {
 
             if ( result.data.certHistory ) {
                 const certHistory = JSON.parse(result.data.certHistory);
-                this.setState({certHistory}, () => document.getElementById('history-table').style.display = '');
+                
+                certHistory.forEach(e => {
+                    e.Date = {};
+                    e.Date.date = this.secondsToDate(e.TimeStamp);
+                })
+
+                this.setState({certHistory}, () => {
+                    document.getElementById('history-table').style.display = '';
+                });
             } else {
                 this.setState({ errorMessages:result.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
             }
@@ -31,6 +39,12 @@ class CertHistory extends Component {
         } finally {
             document.getElementById('get-cert-history-form').reset();
         }
+    }
+
+    secondsToDate = (timeStamp) => {
+        const milliseconds = timeStamp.seconds * 1000 + Math.round(timeStamp.nanos / 1000000);
+
+        return new Date(milliseconds).toString();
     }
 
     render() { 
@@ -57,7 +71,8 @@ class CertHistory extends Component {
                 <table id="history-table" style={{display:"none"}}>
                     <thead>
                       <tr>
-                          <th>Second</th>
+                          <th>Date</th>
+                          <th>Seconds</th>
                           <th>Nanos</th>
                           <th>Value</th>
                       </tr>
@@ -66,6 +81,7 @@ class CertHistory extends Component {
                     <tbody>
                     {this.state.certHistory.map(history => (
                       <tr key={history.TimeStamp.nanos}>
+                        <td>{history.Date.date}</td>
                         <td>{history.TimeStamp.seconds}</td>
                         <td>{history.TimeStamp.nanos}</td>
                         <td>

@@ -20,7 +20,7 @@ const validations = [
         .isAlpha()
         .notEmpty()
         .escape()
-        .withMessage('First and last name is required'),
+        .withMessage('Valid first and last name is required'),
     check('unitCode')
         .trim()
         .isLength({min : 6}, {max : 6})
@@ -30,11 +30,11 @@ const validations = [
     check('grade')
         .trim()
         .isInt({min : 0}, {max : 100})
-        .withMessage('Grade is required'),
+        .withMessage('Valid grade is required'),
     check('credit')
         .trim()
         .isInt({min : 0}, {max : 5})
-        .withMessage('Credit point is required')
+        .withMessage('Valid credit point is required')
 ];
 
 /**

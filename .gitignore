@@ -16,3 +16,5 @@ modified_config.*
 org3_update.*
 
 package-lock.json
+
+containerDown.sh

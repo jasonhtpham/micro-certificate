@@ -84,7 +84,7 @@ class CertByUser extends Component {
                         <div className="indeterminate"></div>
                     </div>
 
-                    <button className="btn waves-effect waves-light" autoFocus type="submit" id="getCertsByOwnerBtn">
+                    <button className="btn waves-effect waves-light" type="submit" id="getCertsByOwnerBtn">
                         Get Certificates
                     </button>
                 </form>
