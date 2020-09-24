@@ -29,11 +29,11 @@ const validations = [
         .withMessage('6-character unit code is required'),
     check('grade')
         .trim()
-        .isInt({min : 0}, {max : 100})
+        .isInt({ gt: 0, lt: 100 })
         .withMessage('Valid grade is required'),
     check('credit')
         .trim()
-        .isInt({min : 0}, {max : 5})
+        .isInt({ gt: 0, lt: 5 })
         .withMessage('Valid credit point is required')
 ];
 
