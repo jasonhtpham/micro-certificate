@@ -45,14 +45,14 @@ class CertByUser extends Component {
                 // Set the temp array above to be the certificates state
                 this.setState({ certificates:certsArray }, () => document.getElementsByClassName('progress')[0].style.display = 'none');
 
-            } else {
-                this.setState({errorMessages:result.data.errors.msg}, () => {
-                    document.getElementById('get-certs-form-error').style.display = 'block';
-                    document.getElementsByClassName('progress')[0].style.display = 'none';
-                });
             }
 
         } catch (err) {
+            this.setState({errorMessages:err.response.data.errors.msg}, () => {
+                document.getElementById('get-certs-form-error').style.display = 'block';
+                document.getElementsByClassName('progress')[0].style.display = 'none';
+            });
+
             return err;
         } finally {
             document.getElementById('cert-by-user-form').reset();

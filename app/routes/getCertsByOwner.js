@@ -29,7 +29,7 @@ module.exports = params => {
                 return res.send({certs});
             } else {
                 const errors = { msg : "User not found" };
-                return res.send({errors});
+                return res.status(404).send({errors});
             }
         } catch (err) {
             console.log(`Error getting certificates by owner: ${err}`);

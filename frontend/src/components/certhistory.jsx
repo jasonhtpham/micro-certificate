@@ -30,12 +30,11 @@ class CertHistory extends Component {
                 this.setState({certHistory}, () => {
                     document.getElementById('history-table').style.display = '';
                 });
-            } else {
-                this.setState({ errorMessages:result.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
             }
 
         } catch (err) {
-            return err.message;
+            this.setState({ errorMessages:err.response.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
+            return err;
         } finally {
             document.getElementById('get-cert-history-form').reset();
         }
