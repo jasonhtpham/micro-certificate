@@ -35,34 +35,32 @@ class CreateCert extends Component {
             // Post data to server to create certificate
             // data will be sent back with either attribute `success or errors`
             const postingCertDetails = await Axios.post(`${BACKEND_API_URL}/createCert`, certDetails);
-            
-            // Stop loading bar
-            document.getElementsByClassName('progress')[0].style.display = 'none';
 
             // The data with SUCCESS attribute which is the certID is returned if success.
             if (postingCertDetails.data.success) {
+                // Stop loading bar
+                document.getElementsByClassName('progress')[0].style.display = 'none';
+
                 alert(`A certificate has been successfully create with ID: ${postingCertDetails.data.success}`);
             }
 
-            // The data with ERRORS attribute is returned if there are any errors.
-            if (postingCertDetails.data.errors) {
-                // display the error messages return from the server
-                document.getElementById('form-error').style.display = 'block';
-
-                let errorsRawArray = [];
-
-                // Process error messages to get a unique values array of error messages
-                const errors = postingCertDetails.data.errors;
-                errors.forEach(error => {
-                    errorsRawArray.push(error.msg);
-                });
-                
-                const errorsSet = new Set([...errorsRawArray]);
-                const errorMessages = [...errorsSet]
-                
-                this.setState({errorMessages})
-            }
         } catch (err) {
+            // Handle errors responsed from server
+            let errorsRawArray = [];
+
+            // Process error messages to get a unique values array of error messages
+            const errors = err.response.data.errors;
+            errors.forEach(error => {
+                errorsRawArray.push(error.msg);
+            });
+            
+            const errorsSet = new Set([...errorsRawArray]);
+            const errorMessages = [...errorsSet]
+            
+            this.setState({errorMessages}, () => {
+                document.getElementById('form-error').style.display = 'block';
+                document.getElementsByClassName('progress')[0].style.display = 'none';
+            })
             return err;
         } finally {
             // reset form when the the form is submitted

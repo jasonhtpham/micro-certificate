@@ -76,7 +76,7 @@ module.exports = params => {
                     errors : errors.array(),
                 };
                 result.errors = errors.array();
-                return res.send(result);
+                return res.status(400).send(result);
             }
 
             // =====================================
@@ -118,7 +118,7 @@ module.exports = params => {
                         errors : errorMessages,
                     };
                     result.errors = errorMessages;
-                    return res.send(result);
+                    return res.status(400).send(result);
                 }
             } 
             
@@ -129,7 +129,7 @@ module.exports = params => {
                     errors : userNotExistsError,
                 };
                 result.errors = userNotExistsError;
-                return res.send(result);
+                return res.status(404).send(result);
             }
         } catch (err) {
             console.log(`There is an error on create certificate endpoint: ${err}`);

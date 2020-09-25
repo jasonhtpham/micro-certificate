@@ -14,6 +14,11 @@ const UserHelper = require('../helpers/UserHelper');
 const userHelper = new UserHelper;
 
 const validations = [
+    check('certId')
+        .trim()
+        .isAlphanumeric()
+        .notEmpty()
+        .withMessage('Certificate ID is required'),
     check(['firstName', 'lastName'])
         .trim()
         .isLength({min : 2})
@@ -54,7 +59,7 @@ module.exports = params => {
                     errors : errors.array(),
                 };
                 result.errors = errors.array();
-                return res.send(result);
+                return res.status(400).send(result);
             }
 
             // =====================================
@@ -94,7 +99,7 @@ module.exports = params => {
                         errors : errorMessages,
                     };
                     result.errors = errorMessages;
-                    return res.send(result);
+                    return res.status(400).send(result);
                 }
             } 
             
@@ -105,26 +110,13 @@ module.exports = params => {
                     errors : userNotExistsError,
                 };
                 result.errors = userNotExistsError;
-                return res.send(result);
+                return res.status(404).send(result);
             }
         } catch (err) {
             console.log(`There is an error on create certificate endpoint: ${err}`);
             return next(err);
         }
     });
-
-    // router.get('/', (req, res, next) => {
-    //     try {
-    //         // console.log(req.session.createCert);
-    //         const errors = req.session.createCert ? req.session.createCert.errors : false;
-    //         req.session.createCert = {};
-    
-    //         return res.send(errors);
-    //     } catch (err) {
-    //         console.log(`Error displaying error messages for create cert: ${err}`);
-    //         return next(err);
-    //     }
-    // });
 
     return router;
 };
