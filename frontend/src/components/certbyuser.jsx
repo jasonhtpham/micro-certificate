@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import Collapsible from '../fragments/collapsible';
+import UpdateCert from './updatecert';
 
 const BACKEND_API_URL = 'http://localhost:5000';
 
@@ -8,7 +9,8 @@ const BACKEND_API_URL = 'http://localhost:5000';
 class CertByUser extends Component {
     state = {
         errorMessages: "",
-        certificates: []
+        certificates: [],
+        isEdit: false,
     }
 
     getCertByUser = async (e) => {
@@ -22,7 +24,6 @@ class CertByUser extends Component {
 
         try {
             const result = await Axios.get(`${BACKEND_API_URL}/getCertsByOwner?firstName=${firstName}&lastName=${lastName}`);
-
 
             if (result.data.certs) {
 
@@ -44,16 +45,16 @@ class CertByUser extends Component {
 
                 // Set the temp array above to be the certificates state
                 this.setState({ certificates:certsArray }, () => document.getElementsByClassName('progress')[0].style.display = 'none');
-
             }
 
         } catch (err) {
+
             this.setState({errorMessages:err.response.data.errors.msg}, () => {
                 document.getElementById('get-certs-form-error').style.display = 'block';
                 document.getElementsByClassName('progress')[0].style.display = 'none';
             });
-
             return err;
+
         } finally {
             document.getElementById('cert-by-user-form').reset();
         }
@@ -94,10 +95,20 @@ class CertByUser extends Component {
                 <div className="certificates-list">
                     {this.state.certificates.map(certificate => (
                         <Collapsible title={certificate.key} className="certificate" key={certificate.key}>
-                            <div className="certificate-content">
-                                <p> <b>Unit Code:       </b> {certificate.record.UnitCode}  </p>
-                                <p> <b>Grade:           </b> {certificate.record.Grade}     </p>
-                                <p> <b>Credit Point(s): </b> {certificate.record.Credit}    </p>
+                            <div>
+                                {(!this.state.isEdit) ? 
+                                    <div className="certificate-content">
+                                        <p> <b>Unit Code:       </b> {certificate.record.UnitCode}  </p>
+                                        <p> <b>Grade:           </b> {certificate.record.Grade}     </p>
+                                        <p> <b>Credit Point(s): </b> {certificate.record.Credit}    </p>
+                                        <button className="btn waves-effect waves-light" type="button" onClick={() => this.setState({ isEdit:true })} >
+                                            Update Certificate
+                                        </button>
+                                    </div> 
+                            : <UpdateCert certificate={certificate} onUpdate={() => {
+                                this.setState({ isEdit:false });
+                                window.location.reload();
+                                }}/>}
                             </div>
                         </Collapsible>
                     ))}

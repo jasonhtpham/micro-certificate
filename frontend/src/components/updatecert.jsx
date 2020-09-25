@@ -13,25 +13,21 @@ class UpdateCert extends Component {
     updateCert = async (e) => {
         e.preventDefault();
         document.getElementById('form-error').style.display = 'none';
+        document.getElementsByClassName('update-progress')[0].style.display = 'block';
 
         const certId = e.target.certId.value;
-        const firstName = e.target.firstName.value;
-        const lastName = e.target.lastName.value;
+        const owner = e.target.owner.value;
         const unitCode = e.target.unitCode.value;
         const grade = e.target.grade.value;
         const credit = e.target.credit.value;
 
         const updateDetails = {
             certId,
-            firstName,
-            lastName,
+            owner,
             unitCode,
             grade,
             credit
-        }
-
-        // Loading bar run
-        document.getElementsByClassName('progress')[0].style.display = 'block';
+        }        
 
         try {
             // Post data to server to create certificate
@@ -41,33 +37,15 @@ class UpdateCert extends Component {
             // The data with SUCCESS attribute which is the certID is returned if success.
             if (updateResult.data.success) {
                 // Stop loading bar
-                document.getElementsByClassName('progress')[0].style.display = 'none';
+                document.getElementsByClassName('update-progress')[0].style.display = 'none';
 
+                this.props.onUpdate();
                 alert(`The certificate ${updateResult.data.success} has been successfully updated`);
             }
 
-            // The data with ERRORS attribute is returned if there are any errors.
-            // if (updateResult.data.errors) {
-            //     // display the error messages return from the server
-            //     document.getElementById('form-error').style.display = 'block';
-
-            //     let errorsRawArray = [];
-
-            //     // Process error messages to get a unique values array of error messages
-            //     const errors = updateResult.data.errors;
-            //     errors.forEach(error => {
-            //         errorsRawArray.push(error.msg);
-            //     });
-                
-            //     const errorsSet = new Set([...errorsRawArray]);
-            //     const errorMessages = [...errorsSet]
-                
-            //     this.setState({errorMessages})
-            // }
         } catch (err) {
-            // display the error messages return from the server
-            
 
+            // display the error messages return from the server
             let errorsRawArray = [];
 
             // Process error messages to get a unique values array of error messages
@@ -81,13 +59,10 @@ class UpdateCert extends Component {
             
             this.setState({errorMessages}, () => {
                 document.getElementById('form-error').style.display = 'block';
-                document.getElementsByClassName('progress')[0].style.display = 'none';
+                document.getElementsByClassName('update-progress')[0].style.display = 'none';
             });
-
             return err;
-        } finally {
-            // reset form when the the form is submitted
-            document.getElementById('update-cert-form').reset();
+            
         }
     };
 
@@ -107,31 +82,27 @@ class UpdateCert extends Component {
                 </div>
                 <form className="update-cert-form" id="update-cert-form" method="POST" onSubmit={this.updateCert}>
                     <div className="input-field col s6">
-                        <input placeholder="Certificate ID" id="certId" name="updateCert-certId" type="text" className="validate" />
+                        <input value={this.props.certificate.record.ID} id="certId" type="text" className="validate" readOnly/>
                         <label htmlFor="certId">Certificate ID</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="First name" id="firstName" name="updateCert-firstName" type="text" className="validate" />
-                        <label htmlFor="firstName">First Name</label>
+                        <input value={this.props.certificate.record.Owner} id="owner" type="text" className="validate" readOnly/>
+                        <label htmlFor="firstName">Owner</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Last name" id="lastName" name="updateCert-lastName" type="text" className="validate" />
-                        <label htmlFor="lastName">Last Name</label>
-                    </div>
-                    <div className="input-field col s6">
-                        <input placeholder="Unit code (e.g. SIT123, MLA123)" pattern="[A-Za-z]{3}[0-9]{3}" id="unitCode" name="updateCert-unitCode" type="text" className="validate" title="6-character Unit Code" />
+                        <input value={this.props.certificate.record.UnitCode} pattern="[A-Za-z]{3}[0-9]{3}" id="unitCode" type="text" className="validate" readOnly/>
                         <label htmlFor="unitCode">Unit Code</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Grade (from 1 to 100)" id="grade" name="updateCert-grade" type="text" className="validate" />
+                        <input defaultValue={this.props.certificate.record.Grade} id="grade" type="text" className="validate" />
                         <label htmlFor="grade">Grade</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Credit points" id="credit" name="updateCert-credit" type="text" className="validate" />
+                        <input defaultValue={this.props.certificate.record.Credit} id="credit" name="updateCert-credit" type="text" className="validate" />
                         <label htmlFor="credit">Credit Points</label>
                     </div>
 
-                    <div className="progress" style={{ display: "none" }} >
+                    <div className="update-progress" style={{ display: "none" }} >
                         <div className="indeterminate"></div>
                     </div>
         

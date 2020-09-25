@@ -33,13 +33,22 @@ class CertHistory extends Component {
             }
 
         } catch (err) {
+
             this.setState({ errorMessages:err.response.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
             return err;
+            
         } finally {
             document.getElementById('get-cert-history-form').reset();
         }
     }
 
+    /**
+     * @description A function converting protobuff timestamp to normal Date.
+     * 
+     * @param {protoBuff.TimeStamp} timeStamp A timestamp object containing {seconds, nanos}.
+     * 
+     * @returns {string} A stringified Date value.
+     */
     secondsToDate = (timeStamp) => {
         const milliseconds = timeStamp.seconds * 1000 + Math.round(timeStamp.nanos / 1000000);
 

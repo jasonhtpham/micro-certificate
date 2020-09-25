@@ -19,13 +19,6 @@ const validations = [
         .isAlphanumeric()
         .notEmpty()
         .withMessage('Certificate ID is required'),
-    check(['firstName', 'lastName'])
-        .trim()
-        .isLength({min : 2})
-        .isAlpha()
-        .notEmpty()
-        .escape()
-        .withMessage('Valid first and last name is required'),
     check('unitCode')
         .trim()
         .isLength({min : 6}, {max : 6})
@@ -63,15 +56,16 @@ module.exports = params => {
             }
 
             // =====================================
-            const { certId, firstName, lastName, unitCode, grade, credit } = req.body;
+            const { certId, owner, unitCode, grade, credit } = req.body;
+
+            const firstName = owner.split(' ')[0];
+            const lastName = owner.split(' ')[1];
 
             // Check if entered user exists (registered)            
             const userExists = userHelper.userExistsCheck(firstName, lastName);
             
             // Execute the transaction if the user does exist
             if (userExists) {
-    
-                const owner = firstName + ' ' + lastName;
     
                 // Receive response from the contract => check whether successful payload OR errors.
                 const contractResponse = await hyperledgerApp.UpdateCert(certId, unitCode, grade, owner, credit);

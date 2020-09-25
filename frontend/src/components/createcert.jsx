@@ -45,6 +45,7 @@ class CreateCert extends Component {
             }
 
         } catch (err) {
+
             // Handle errors responsed from server
             let errorsRawArray = [];
 
@@ -62,6 +63,7 @@ class CreateCert extends Component {
                 document.getElementsByClassName('progress')[0].style.display = 'none';
             })
             return err;
+            
         } finally {
             // reset form when the the form is submitted
             document.getElementById('create-cert-form').reset();
