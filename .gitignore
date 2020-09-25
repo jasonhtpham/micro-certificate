@@ -17,4 +17,5 @@ org3_update.*
 
 package-lock.json
 
-containerDown.sh
+# containerDown.sh
+# backendServerUp.sh
