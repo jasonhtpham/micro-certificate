@@ -46,22 +46,7 @@ class CreateCert extends Component {
 
         } catch (err) {
 
-            // Handle errors responsed from server
-            let errorsRawArray = [];
-
-            // Process error messages to get a unique values array of error messages
-            const errors = err.response.data.errors;
-            errors.forEach(error => {
-                errorsRawArray.push(error.msg);
-            });
-            
-            const errorsSet = new Set([...errorsRawArray]);
-            const errorMessages = [...errorsSet]
-            
-            this.setState({errorMessages}, () => {
-                document.getElementById('form-error').style.display = 'block';
-                document.getElementsByClassName('progress')[0].style.display = 'none';
-            })
+            this.handleErrors(err.response.data.errors)
             return err;
             
         } finally {
@@ -69,6 +54,28 @@ class CreateCert extends Component {
             document.getElementById('create-cert-form').reset();
         }
     };
+
+     /**
+     * @description A function handling errors responsed by the server.
+     * 
+     * @param {Array} errors An array of error messages returned from the server.
+     */
+    handleErrors = (errors) => {
+        // display the error messages return from the server
+        let errorsRawArray = [];
+
+        errors.forEach(error => {
+            errorsRawArray.push(error.msg);
+        });
+        
+        const errorsSet = new Set([...errorsRawArray]);
+        const errorMessages = [...errorsSet]
+        
+        this.setState({errorMessages}, () => {
+            document.getElementById('form-error').style.display = 'block';
+            document.getElementsByClassName('progress')[0].style.display = 'none';
+        });
+    }
 
 
     render() { 

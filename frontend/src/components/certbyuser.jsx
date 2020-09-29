@@ -8,7 +8,7 @@ const BACKEND_API_URL = 'http://localhost:5000';
 
 class CertByUser extends Component {
     state = {
-        errorMessages: "",
+        errorMessages: [],
         certificates: [],
         isEdit: false,
     }
@@ -49,15 +49,34 @@ class CertByUser extends Component {
 
         } catch (err) {
 
-            this.setState({errorMessages:err.response.data.errors.msg}, () => {
-                document.getElementById('get-certs-form-error').style.display = 'block';
-                document.getElementsByClassName('progress')[0].style.display = 'none';
-            });
+            this.handleErrors(err.response.data.errors);
             return err;
 
         } finally {
             document.getElementById('cert-by-user-form').reset();
         }
+    }
+
+     /**
+     * @description A function handling errors responsed by the server.
+     * 
+     * @param {Array} errors An array of error messages returned from the server.
+     */
+    handleErrors = (errors) => {
+        // display the error messages return from the server
+        let errorsRawArray = [];
+
+        errors.forEach(error => {
+            errorsRawArray.push(error.msg);
+        });
+        
+        const errorsSet = new Set([...errorsRawArray]);
+        const errorMessages = [...errorsSet]
+        
+        this.setState({errorMessages}, () => {
+            document.getElementById('get-certs-form-error').style.display = 'block';
+            document.getElementsByClassName('progress')[0].style.display = 'none';
+        });
     }
 
     render() { 
@@ -67,7 +86,9 @@ class CertByUser extends Component {
                 <div className="card-panel red lighten-4" id="get-certs-form-error" style={{display: "none"}} >
                     <span className="red-text text-darken-4">
                         <ul className="error-list">
-                            {this.state.errorMessages}
+                            {this.state.errorMessages.map (error => (
+                                <li key={this.state.errorMessages.indexOf(error)} > {error} </li>
+                            ))}
                         </ul>
                     </span>
                 </div>

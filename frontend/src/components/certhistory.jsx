@@ -5,7 +5,7 @@ const BACKEND_API_URL = 'http://localhost:5000';
 
 class CertHistory extends Component {
     state = {
-        errorMessages : "",
+        errorMessages : [],
         certHistory : []
     };
 
@@ -34,12 +34,33 @@ class CertHistory extends Component {
 
         } catch (err) {
 
-            this.setState({ errorMessages:err.response.data.errors.msg }, () => document.getElementById('certs-history-form-error').style.display = 'block');
+            this.handleErrors(err.response.data.errors);
             return err;
             
         } finally {
             document.getElementById('get-cert-history-form').reset();
         }
+    }
+
+    /**
+     * @description A function handling errors responsed by the server.
+     * 
+     * @param {Array} errors An array of error messages returned from the server.
+     */
+    handleErrors = (errors) => {
+        // display the error messages return from the server
+        let errorsRawArray = [];
+
+        errors.forEach(error => {
+            errorsRawArray.push(error.msg);
+        });
+        
+        const errorsSet = new Set([...errorsRawArray]);
+        const errorMessages = [...errorsSet]
+        
+        this.setState({errorMessages}, () => {
+            document.getElementById('certs-history-form-error').style.display = 'block';
+        });
     }
 
     /**

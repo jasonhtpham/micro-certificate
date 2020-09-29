@@ -9,7 +9,6 @@ class UpdateCert extends Component {
         errorMessages : [],
     };
 
-    // A func create certificate when the form is submitted
     updateCert = async (e) => {
         e.preventDefault();
         document.getElementById('form-error').style.display = 'none';
@@ -30,8 +29,8 @@ class UpdateCert extends Component {
         }        
 
         try {
-            // Post data to server to create certificate
-            // data will be sent back with either attribute `success or errors`
+
+            // Post data to server to update certificate
             const updateResult = await Axios.post(`${BACKEND_API_URL}/updateCert`, updateDetails);
 
             // The data with SUCCESS attribute which is the certID is returned if success.
@@ -45,26 +44,34 @@ class UpdateCert extends Component {
 
         } catch (err) {
 
-            // display the error messages return from the server
-            let errorsRawArray = [];
+            this.handleErrors(err.response.data.errors);
 
-            // Process error messages to get a unique values array of error messages
-            const errors = err.response.data.errors;
-            errors.forEach(error => {
-                errorsRawArray.push(error.msg);
-            });
-            
-            const errorsSet = new Set([...errorsRawArray]);
-            const errorMessages = [...errorsSet]
-            
-            this.setState({errorMessages}, () => {
-                document.getElementById('form-error').style.display = 'block';
-                document.getElementsByClassName('update-progress')[0].style.display = 'none';
-            });
             return err;
             
         }
     };
+
+     /**
+     * @description A function handling errors responsed by the server.
+     * 
+     * @param {Array} errors An array of error messages returned from the server.
+     */
+    handleErrors = (errors) => {
+        // display the error messages return from the server
+        let errorsRawArray = [];
+
+        errors.forEach(error => {
+            errorsRawArray.push(error.msg);
+        });
+        
+        const errorsSet = new Set([...errorsRawArray]);
+        const errorMessages = [...errorsSet]
+        
+        this.setState({errorMessages}, () => {
+            document.getElementById('form-error').style.display = 'block';
+            document.getElementsByClassName('update-progress')[0].style.display = 'none';
+        });
+    }
 
 
     render() { 
