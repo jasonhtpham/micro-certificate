@@ -97,11 +97,11 @@ class HyperledgerApp {
         }
     }
 
-    CreateCert = async (id, unitCode, grade, owner, credit) => {
+    CreateCert = async (id, unitCode, mark, owner, credit, period) => {
         console.log('Submit Transaction: CreateCert() Create a new certificate');
         try {
             // Return the successful payload if the transaction is committed without errors
-            const result = await contract.submitTransaction('CreateCert', id, unitCode, grade, owner, credit);
+            const result = await contract.submitTransaction('CreateCert', id, unitCode, mark, owner, credit, period);
             return prettyJSONString(result.toString());
         } catch (err) {
             console.log(`Error when create certificate: ${err}`);
@@ -132,11 +132,11 @@ class HyperledgerApp {
         }
     }
 
-    UpdateCert = async (id, unitCode, grade, owner, credit) => {
+    UpdateCert = async (id, unitCode, mark, owner, credit) => {
         console.log('Submit Transaction: UpdateCert() Update certificate');
         try {
             // Return the successful payload if the transaction is committed without errors
-            const result = await contract.submitTransaction('UpdateCert', id, unitCode, grade, owner, credit);
+            const result = await contract.submitTransaction('UpdateCert', id, unitCode, mark, owner, credit);
             return prettyJSONString(result.toString());
         } catch (err) {
             console.log(`Error when create certificate: ${err}`);

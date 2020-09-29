@@ -27,10 +27,10 @@ const validations = [
         .isAlphanumeric()
         .notEmpty()
         .withMessage('6-character unit code is required'),
-    check('grade')
+    check('mark')
         .trim()
         .isInt({ gt: 0, lt: 100 })
-        .withMessage('Valid grade is required'),
+        .withMessage('Valid mark is required'),
     check('credit')
         .trim()
         .isInt( {gt: 0, lt: 5} )
@@ -80,7 +80,7 @@ module.exports = params => {
             }
 
             // =====================================
-            const { firstName, lastName, unitCode, grade, credit } = req.body;
+            const { firstName, lastName, unitCode, mark, credit, period } = req.body;
 
             // Check if entered user exists (registered)            
     
@@ -93,7 +93,7 @@ module.exports = params => {
                 const owner = firstName + ' ' + lastName;
     
                 // Receive response from the contract => check whether successful payload OR errors.
-                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, grade, owner, credit);
+                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, mark, owner, credit, period);
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {
