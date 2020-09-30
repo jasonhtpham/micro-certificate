@@ -46,15 +46,13 @@ const validations = [
  * 
  * @returns {string} A certificate string derived from the combination of the 3 params.
  */
-const produceCertId = (firstName, lastName, unitCode) => {
-    // certID = first name + last name + last 3 digits from the unitCode
-    const processedFirstName = firstName.trim().toLowerCase();
-    const processedLastName = lastName.trim().toLowerCase();
+const produceCertId = (studentID, unitCode) => {
+    // certID = studentID_unitCode
+    const processedStudentID = studentID.toString().trim()
     
-    const lowerCaseUnitCode = unitCode.trim().toLowerCase();
-    const processedUnitCode = lowerCaseUnitCode.substring(3);
+    const upperCaseUnitCode = unitCode.trim().toUpperCase();
 
-    const certId = processedFirstName + processedLastName + processedUnitCode;
+    const certId = processedStudentID + "_" + upperCaseUnitCode;
     
     return certId;
 }
@@ -80,7 +78,7 @@ module.exports = params => {
             }
 
             // =====================================
-            const { firstName, lastName, unitCode, mark, credit, period } = req.body;
+            const { studentID, firstName, lastName, unitCode, mark, credit, period } = req.body;
 
             // Check if entered user exists (registered)            
     
@@ -88,12 +86,12 @@ module.exports = params => {
             
             // Execute the transaction if the user does exist
             if (userExists) {
-                const certId = produceCertId(firstName, lastName, unitCode);
-    
-                const owner = firstName + ' ' + lastName;
+                const certId = produceCertId(studentID, unitCode);
+                
+                const name = firstName + ' ' + lastName;
     
                 // Receive response from the contract => check whether successful payload OR errors.
-                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, mark, owner, credit, period);
+                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, mark, name, studentID, credit, period);
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {

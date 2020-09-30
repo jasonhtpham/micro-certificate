@@ -17,14 +17,14 @@ module.exports = params => {
     // An endpoint returns certificates based on the given name
     router.get('/', async (req, res, next) => {
         try {
-            const { firstName, lastName } = req.query;
+            const { studentID, firstName, lastName } = req.query;
 
             const userExists = await userHelper.userExistsCheck(firstName, lastName);
         
             if (userExists) {
-                const owner = firstName + ' ' + lastName;
+                const studentName = firstName + ' ' + lastName;
         
-                const certs = await hyperledgerApp.GetCertsByOwner(owner);
+                const certs = await hyperledgerApp.GetCertsByOwner(studentName, studentID);
             
                 return res.send({certs});
             } else {

@@ -97,11 +97,11 @@ class HyperledgerApp {
         }
     }
 
-    CreateCert = async (id, unitCode, mark, owner, credit, period) => {
+    CreateCert = async (id, unitCode, mark, name, studentID, credit, period) => {
         console.log('Submit Transaction: CreateCert() Create a new certificate');
         try {
             // Return the successful payload if the transaction is committed without errors
-            const result = await contract.submitTransaction('CreateCert', id, unitCode, mark, owner, credit, period);
+            const result = await contract.submitTransaction('CreateCert', id, unitCode, mark, name, studentID, credit, period);
             return prettyJSONString(result.toString());
         } catch (err) {
             console.log(`Error when create certificate: ${err}`);
@@ -111,14 +111,14 @@ class HyperledgerApp {
         }
     }
 
-    GetCertsByOwner = async (owner) => {
-        // Query certs by owner
+    GetCertsByOwner = async (name, studentID) => {
+        // Query certs by name and studentID
         console.log('Evaluate Transaction: QueryCertsByOwner()');
         try {
-            const result = await contract.evaluateTransaction('QueryCertsByOwner', owner);
+            const result = await contract.evaluateTransaction('QueryCertsByOwner', name, studentID);
             return prettyJSONString(result.toString());
         } catch (err) {
-            console.log(`Error when get certificates by owner: ${err}`);
+            console.log(`Error when get certificates by name and studentID: ${err}`);
         }
     }
 
@@ -132,11 +132,11 @@ class HyperledgerApp {
         }
     }
 
-    UpdateCert = async (id, unitCode, mark, owner, credit) => {
+    UpdateCert = async (id, unitCode, mark, name, studentID, credit, period) => {
         console.log('Submit Transaction: UpdateCert() Update certificate');
         try {
             // Return the successful payload if the transaction is committed without errors
-            const result = await contract.submitTransaction('UpdateCert', id, unitCode, mark, owner, credit);
+            const result = await contract.submitTransaction('UpdateCert', id, unitCode, mark, name, studentID, credit, period);
             return prettyJSONString(result.toString());
         } catch (err) {
             console.log(`Error when create certificate: ${err}`);

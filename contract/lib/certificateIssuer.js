@@ -4,26 +4,26 @@ const { Contract } = require('fabric-contract-api');
 
 class CertificateIssuer extends Contract {
 
-    async InitLedger(ctx) {
-        const certs = [
-            {
-                ID: 'studentA725',
-                UnitCode: 'SIT725',
-                Mark: 50,
-                Owner: 'Student A',
-                Credit: 1,
-            },
-        ];
+    // async InitLedger(ctx) {
+    //     const certs = [
+    //         {
+    //             ID: 'studentA725',
+    //             UnitCode: 'SIT725',
+    //             Mark: 50,
+    //             Owner: 'Student A',
+    //             Credit: 1,
+    //         },
+    //     ];
 
-        for (const cert of certs) {
-            cert.docType = 'certificate';
-            await ctx.stub.putState(cert.ID, Buffer.from(JSON.stringify(cert)));
-            console.info(`cert ${cert.ID} initialized`);
-        }
-    }
+    //     for (const cert of certs) {
+    //         cert.docType = 'certificate';
+    //         await ctx.stub.putState(cert.ID, Buffer.from(JSON.stringify(cert)));
+    //         console.info(`cert ${cert.ID} initialized`);
+    //     }
+    // }
 
     // Createcert issues a new cert to the world state with given details.
-    async CreateCert(ctx, id, unitcode, mark, owner, credit, period) {
+    async CreateCert(ctx, id, unitcode, mark, name, studentID, credit, period) {
         // Check if the certificate already exists
         const exists = await this.CertExists(ctx, id);
         if (exists) {
@@ -36,7 +36,8 @@ class CertificateIssuer extends Contract {
             ID: id,
             UnitCode: unitcode,
             Mark: mark,
-            Owner: owner,
+            StudentName: name,
+            StudentID: studentID,
             Credit: credit,
             Period: period
         };
@@ -54,7 +55,7 @@ class CertificateIssuer extends Contract {
     }
 
     // Updatecert updates an existing cert in the world state with provided parameters.
-    async UpdateCert(ctx, id, unitcode, mark, owner, credit, period) {
+    async UpdateCert(ctx, id, unitcode, mark, name, studentID, credit, period) {
         const exists = await this.CertExists(ctx, id);
         if (!exists) {
             throw new Error(`The cert ${id} does not exist`);
@@ -66,7 +67,8 @@ class CertificateIssuer extends Contract {
             ID: id,
             UnitCode: unitcode,
             Mark: mark,
-            Owner: owner,
+            StudentName: name,
+            StudentID: studentID,
             Credit: credit,
             Period: period
         };
@@ -90,15 +92,15 @@ class CertificateIssuer extends Contract {
     }
 
     // Transfercert updates the owner field of cert with given id in the world state.
-    async TransferCert(ctx, id, newOwner) {
-        const certString = await this.ReadCert(ctx, id);
-        const cert = JSON.parse(certString);
-        if (cert.Owner == newOwner) {
-            throw new Error('The student already had this certificate');
-        }
-        cert.Owner = newOwner;
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
-    }
+    // async TransferCert(ctx, id, newOwner) {
+    //     const certString = await this.ReadCert(ctx, id);
+    //     const cert = JSON.parse(certString);
+    //     if (cert.Owner == newOwner) {
+    //         throw new Error('The student already had this certificate');
+    //     }
+    //     cert.Owner = newOwner;
+    //     return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
+    // }
 
     // GetCertHistory returns the chain of custody for a certificate since its issuance
     async GetCertHistory(ctx, id) {
@@ -111,11 +113,12 @@ class CertificateIssuer extends Contract {
     // QueryCertsByOwner queries for certificates by owner
     // This will use parameterized query which is only supported
     // by some databases, such as CouchDB.
-    async QueryCertsByOwner(ctx, owner) {
+    async QueryCertsByOwner(ctx, name, studentID) {
         let queryString = {};
         queryString.selector = {};
         queryString.selector.docType = 'certificate';
-        queryString.selector.Owner = owner;
+        queryString.selector.StudentName = name;
+        queryString.selector.StudentID = studentID;
 
         let queryResults = await this.GetQueryResultForQueryString(ctx, JSON.stringify(queryString));
         
