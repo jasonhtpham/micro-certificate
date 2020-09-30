@@ -44,7 +44,7 @@ CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="node"
 CC_SRC_PATH="./contract"
 CC_NAME="cert"
-VERSION="3"
+VERSION="2"
 
 PackageChaincode() {
     rm -rf ${CC_NAME}.tar.gz

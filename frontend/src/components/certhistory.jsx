@@ -114,9 +114,11 @@ class CertHistory extends Component {
                         <td>{history.TimeStamp.seconds}</td>
                         <td>{history.TimeStamp.nanos}</td>
                         <td>
-                            <p><b>Unit code:    </b> {history.Value.UnitCode}   </p>
-                            <p><b>Grade:        </b> {history.Value.Grade}      </p>
-                            <p><b>Credit point: </b> {history.Value.Credit}     </p>
+                            <p><b>Unit code:            </b> {history.Value.UnitCode}     </p>
+                            <p><b>Mark:                 </b> {history.Value.Mark}         </p>
+                            <p><b>Credit point:         </b> {history.Value.Credit}       </p>
+                            <p><b>Teaching Period:      </b> {history.Value.Period}       </p>
+                            <p><b>Education Provider:   </b> {history.Value.Provider}     </p>
                         </td>
                       </tr>
                     ))}

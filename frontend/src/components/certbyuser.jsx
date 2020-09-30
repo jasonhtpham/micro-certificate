@@ -95,7 +95,7 @@ class CertByUser extends Component {
                 <form id="cert-by-user-form" method="GET" onSubmit={this.getCertByUser}>
                     <div className="input-field col s6">
                         <input placeholder="Student ID (9-digit number)" pattern="[0-9]{9}" id="studentIDToQuery" type="text" className="validate" />
-                        <label htmlFor="studentID">Student ID</label>
+                        <label htmlFor="studentIDToQuery">Student ID</label>
                     </div>
                     <div className="input-field col s6">
                         <input placeholder="First name" id="firstNameToQuery" type="text" className="validate" />
@@ -123,10 +123,11 @@ class CertByUser extends Component {
                             <div>
                                 {(!this.state.isEdit) ? 
                                     <div className="certificate-content">
-                                        <p> <b>Unit Code:       </b> {certificate.record.UnitCode}  </p>
-                                        <p> <b>Mark:            </b> {certificate.record.Mark}     </p>
-                                        <p> <b>Credit Point(s): </b> {certificate.record.Credit}    </p>
-                                        <p> <b>Teaching Period: </b> {certificate.record.Period}    </p>
+                                        <p> <b>Unit Code:           </b> {certificate.record.UnitCode}    </p>
+                                        <p> <b>Mark:                </b> {certificate.record.Mark}        </p>
+                                        <p> <b>Credit Point(s):     </b> {certificate.record.Credit}      </p>
+                                        <p> <b>Teaching Period:     </b> {certificate.record.Period}      </p>
+                                        <p> <b>Education Provider:  </b> {certificate.record.Provider}    </p>
                                         {/* <button className="btn waves-effect waves-light" type="button" onClick={() => this.setState({ isEdit:true })} >
                                             Update Certificate
                                         </button> */}

@@ -105,13 +105,11 @@ CC_SRC_PATH="./contract"
 CC_NAME="cert"
 
 PackageChaincode() {
+    rm -rf ${CC_NAME}.tar.gz
     echo "===== Packaging chaincode ====="
-    if [[ -e "cert.tar.gz" ]]; then
-        echo "Chaincode package already exists"
-    else
-        setGlobalsForPeer0Org1
-        peer lifecycle chaincode package cert.tar.gz --path ./contract --lang node --label cert_1
-    fi
+    
+    setGlobalsForPeer0Org1
+    peer lifecycle chaincode package cert.tar.gz --path ./contract --lang node --label cert_1
 }
 
 

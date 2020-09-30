@@ -23,7 +23,7 @@ class CertificateIssuer extends Contract {
     // }
 
     // Createcert issues a new cert to the world state with given details.
-    async CreateCert(ctx, id, unitcode, mark, name, studentID, credit, period) {
+    async CreateCert(ctx, id, unitcode, mark, name, studentID, credit, period, provider) {
         // Check if the certificate already exists
         const exists = await this.CertExists(ctx, id);
         if (exists) {
@@ -39,7 +39,8 @@ class CertificateIssuer extends Contract {
             StudentName: name,
             StudentID: studentID,
             Credit: credit,
-            Period: period
+            Period: period,
+            Provider: provider
         };
         
         return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
@@ -55,7 +56,7 @@ class CertificateIssuer extends Contract {
     }
 
     // Updatecert updates an existing cert in the world state with provided parameters.
-    async UpdateCert(ctx, id, unitcode, mark, name, studentID, credit, period) {
+    async UpdateCert(ctx, id, unitcode, mark, name, studentID, credit, period, provider) {
         const exists = await this.CertExists(ctx, id);
         if (!exists) {
             throw new Error(`The cert ${id} does not exist`);
@@ -70,7 +71,8 @@ class CertificateIssuer extends Contract {
             StudentName: name,
             StudentID: studentID,
             Credit: credit,
-            Period: period
+            Period: period,
+            Provider: provider
         };
         return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedCert)));
     }

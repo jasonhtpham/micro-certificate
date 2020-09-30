@@ -21,6 +21,7 @@ class CreateCert extends Component {
         const mark = e.target.mark.value;
         const credit = e.target.credit.value;
         const period = e.target.period.value;
+        const provider = e.target.provider.value;
 
         const certDetails = {
             studentID,
@@ -29,7 +30,8 @@ class CreateCert extends Component {
             unitCode,
             mark,
             credit,
-            period
+            period,
+            provider
         }
 
         // Loading bar run
@@ -123,6 +125,10 @@ class CreateCert extends Component {
                     <div className="input-field col s6">
                         <input placeholder="Teaching period" id="period" type="text" className="validate" />
                         <label htmlFor="period">Teaching Period</label>
+                    </div>
+                    <div className="input-field col s6">
+                        <input placeholder="Education Provider" id="provider" type="text" className="validate" />
+                        <label htmlFor="provider">Education Provider</label>
                     </div>
 
                     <div className="progress" style={{ display: "none" }} >
