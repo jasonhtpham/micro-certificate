@@ -18,12 +18,12 @@ class CertByUser extends Component {
         document.getElementById('get-certs-form-error').style.display = 'none';
         document.getElementsByClassName('progress')[0].style.display = 'block';
         
-
+        const studentID = e.target.studentIDToQuery.value;
         const firstName = e.target.firstNameToQuery.value;
         const lastName = e.target.lastNameToQuery.value;
 
         try {
-            const result = await Axios.get(`${BACKEND_API_URL}/getCertsByOwner?firstName=${firstName}&lastName=${lastName}`);
+            const result = await Axios.get(`${BACKEND_API_URL}/getCertsByOwner?firstName=${firstName}&lastName=${lastName}&studentID=${studentID}`);
 
             if (result.data.certs) {
 
@@ -94,6 +94,10 @@ class CertByUser extends Component {
                 </div>
                 <form id="cert-by-user-form" method="GET" onSubmit={this.getCertByUser}>
                     <div className="input-field col s6">
+                        <input placeholder="Student ID (9-digit number)" pattern="[0-9]{9}" id="studentIDToQuery" type="text" className="validate" />
+                        <label htmlFor="studentID">Student ID</label>
+                    </div>
+                    <div className="input-field col s6">
                         <input placeholder="First name" id="firstNameToQuery" type="text" className="validate" />
                         <label htmlFor="firstNameToQuery">First Name</label>
                     </div>
@@ -120,11 +124,12 @@ class CertByUser extends Component {
                                 {(!this.state.isEdit) ? 
                                     <div className="certificate-content">
                                         <p> <b>Unit Code:       </b> {certificate.record.UnitCode}  </p>
-                                        <p> <b>Grade:           </b> {certificate.record.Grade}     </p>
+                                        <p> <b>Mark:            </b> {certificate.record.Mark}     </p>
                                         <p> <b>Credit Point(s): </b> {certificate.record.Credit}    </p>
-                                        <button className="btn waves-effect waves-light" type="button" onClick={() => this.setState({ isEdit:true })} >
+                                        <p> <b>Teaching Period: </b> {certificate.record.Period}    </p>
+                                        {/* <button className="btn waves-effect waves-light" type="button" onClick={() => this.setState({ isEdit:true })} >
                                             Update Certificate
-                                        </button>
+                                        </button> */}
                                     </div> 
                             : <UpdateCert certificate={certificate} onUpdate={() => {
                                 this.setState({ isEdit:false });

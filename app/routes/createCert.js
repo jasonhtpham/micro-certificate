@@ -91,7 +91,7 @@ module.exports = params => {
                 const name = firstName + ' ' + lastName;
     
                 // Receive response from the contract => check whether successful payload OR errors.
-                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode, mark, name, studentID, credit, period);
+                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode.toUpperCase(), mark, name, studentID, credit, period);
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {

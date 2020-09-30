@@ -14,6 +14,7 @@ class CreateCert extends Component {
         e.preventDefault();
         document.getElementById('form-error').style.display = 'none';
 
+        const studentID = e.target.studentID.value;
         const firstName = e.target.firstName.value;
         const lastName = e.target.lastName.value;
         const unitCode = e.target.unitCode.value;
@@ -22,6 +23,7 @@ class CreateCert extends Component {
         const period = e.target.period.value;
 
         const certDetails = {
+            studentID,
             firstName,
             lastName,
             unitCode,
@@ -94,6 +96,10 @@ class CreateCert extends Component {
                     </span>
                 </div>
                 <form className="create-cert-form" id="create-cert-form" method="POST" onSubmit={this.createCert}>
+                    <div className="input-field col s6">
+                        <input placeholder="Student ID (9-digit number)" pattern="[0-9]{9}" id="studentID" type="text" className="validate" />
+                        <label htmlFor="studentID">Student ID</label>
+                    </div>
                     <div className="input-field col s6">
                         <input placeholder="First name" id="firstName" type="text" className="validate" />
                         <label htmlFor="firstName">First Name</label>
