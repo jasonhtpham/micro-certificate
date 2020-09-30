@@ -17,15 +17,17 @@ class CreateCert extends Component {
         const firstName = e.target.firstName.value;
         const lastName = e.target.lastName.value;
         const unitCode = e.target.unitCode.value;
-        const grade = e.target.grade.value;
+        const mark = e.target.mark.value;
         const credit = e.target.credit.value;
+        const period = e.target.period.value;
 
         const certDetails = {
             firstName,
             lastName,
             unitCode,
-            grade,
-            credit
+            mark,
+            credit,
+            period
         }
 
         // Loading bar run
@@ -93,24 +95,28 @@ class CreateCert extends Component {
                 </div>
                 <form className="create-cert-form" id="create-cert-form" method="POST" onSubmit={this.createCert}>
                     <div className="input-field col s6">
-                        <input placeholder="First name" id="firstName" name="createcert-firstName" type="text" className="validate" />
+                        <input placeholder="First name" id="firstName" type="text" className="validate" />
                         <label htmlFor="firstName">First Name</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Last name" id="lastName" name="createcert-lastName" type="text" className="validate" />
+                        <input placeholder="Last name" id="lastName" type="text" className="validate" />
                         <label htmlFor="lastName">Last Name</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Unit code (e.g. SIT123, MLA123)" pattern="[A-Za-z]{3}[0-9]{3}" id="unitCode" name="createcert-unitCode" type="text" className="validate" title="6-character Unit Code" />
+                        <input placeholder="Unit code (e.g. SIT123, MLA123)" pattern="[A-Za-z]{3}[0-9]{3}" id="unitCode" type="text" className="validate" title="6-character Unit Code" />
                         <label htmlFor="unitCode">Unit Code</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Grade (from 1 to 100)" id="grade" name="createcert-grade" type="text" className="validate" />
-                        <label htmlFor="grade">Grade</label>
+                        <input placeholder="Mark (from 1 to 100)" id="mark" type="text" className="validate" />
+                        <label htmlFor="mark">Mark</label>
                     </div>
                     <div className="input-field col s6">
-                        <input placeholder="Credit point" id="credit" name="createcert-credit" type="text" className="validate" />
+                        <input placeholder="Credit point" id="credit" type="text" className="validate" />
                         <label htmlFor="credit">Credit Points</label>
+                    </div>
+                    <div className="input-field col s6">
+                        <input placeholder="Teaching period" id="period" type="text" className="validate" />
+                        <label htmlFor="period">Teaching Period</label>
                     </div>
 
                     <div className="progress" style={{ display: "none" }} >
