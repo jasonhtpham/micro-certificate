@@ -16,9 +16,6 @@ const prettyJSONString = (inputString) => {
     return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
-// pre-requisites:
-// fabric-sample test-network setup with two peers and an ordering service,
-// the companion chaincode is deployed, approved and committed on the channel mychannel
 class HyperledgerApp {
     constructor() {
         this.InitLedger();
@@ -148,54 +145,3 @@ class HyperledgerApp {
 }
 
 module.exports = HyperledgerApp;
-
-
-
-
-
-// Legacy test codes
-    /*
-            // Get the certificates stored on ledger
-            console.log('\nEvaluate Transaction: ReadCert() with id:studentA430 to check if the cert is issued')
-            result = await contract.evaluateTransaction('ReadCert', 'studentA430');
-            console.log(`\nresult: ${prettyJSONString(result.toString())}`)
-
-            console.log('\n***********************');
-
-            // Query certs by owner
-            console.log('\nEvaluate Transaction: QueryCertsByOwner() with owner:studentA')
-            result = await contract.evaluateTransaction('QueryCertsByOwner', 'studentA');
-            console.log(`\nCerts of StudentA: ${prettyJSONString(result.toString())}`);
-
-            console.log('\nEvaluate Transaction: QueryCertsByOwner() with owner:studentB')
-            result = await contract.evaluateTransaction('QueryCertsByOwner', 'studentB');
-            console.log(`\nCerts of StudentB: ${prettyJSONString(result.toString())}`);
-
-            console.log('\n***********************');
-
-            // GetCertHistory to view a certificate's history since creation
-            console.log('\nEvaluate Transaction: GetCertHistory()');
-            result = await contract.evaluateTransaction('GetCertHistory', 'studentA725');
-            console.log(`\nHistory of certificate studentA725: ${prettyJSONString(result.toString())}`);
-
-            // try {
-            //     console.log('\nSubmit Transaction: TransferCert SIT725 to its owner');
-            //     //Non existing asset asset70 should throw Error
-            //     await contract.submitTransaction('TransferCert', 'SIT725', 'Jason');
-            // } catch (error) {
-            //     console.log(`Expected an error on TransferCert of non-existing Asset: ${error}`);
-            // }
-
-        } finally {
-            // Disconnect from the gateway peer when all work for this client identity is complete
-            gateway.disconnect();
-        }
-    } catch (error) {
-        console.error(`Failed to evaluate transaction: ${error}`);
-        process.exit(1);
-    }
-}
-
-
-main();
-*/

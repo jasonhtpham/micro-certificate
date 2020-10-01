@@ -53,11 +53,10 @@ const validations = [
 /**
  * @description Produces an certificate ID which will be saved as Key in ledger database.
  * 
- * @param {string} firstName first name of the user. The parameter is derived from user's input in frontend forms.
- * @param {string} lastName last name of the user. The parameter is derived from user's input in frontend forms.
+ * @param {string} studentID a unique student ID  to pair with the unitcode generating a unique certID
  * @param {string} unitCode unit code which the certificate certifies the user has completed. The parameter is derived from user's input in frontend forms.
  * 
- * @returns {string} A certificate string derived from the combination of the 3 params.
+ * @returns {string} A unique certificate ID.
  */
 const produceCertId = (studentID, unitCode) => {
     // certID = studentID_unitCode
