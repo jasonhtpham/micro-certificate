@@ -83,7 +83,9 @@ class CertHistory extends Component {
                 <div className="card-panel red lighten-4" id="certs-history-form-error" style={{display: "none"}} >
                     <span className="red-text text-darken-4">
                         <ul className="error-list">
-                            {this.state.errorMessages}
+                            {this.state.errorMessages.map (error => (
+                                <li key={this.state.errorMessages.indexOf(error)} > {error} </li>
+                            ))}
                         </ul>
                     </span>
                 </div>

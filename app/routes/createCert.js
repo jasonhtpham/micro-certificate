@@ -14,6 +14,10 @@ const UserHelper = require('../helpers/UserHelper');
 const userHelper = new UserHelper;
 
 const validations = [
+    check('studentID')
+        .trim()
+        .isInt({ gt: 100000000, lt: 999999999 })
+        .withMessage('Invalid student ID'),
     check(['firstName', 'lastName'])
         .trim()
         .isLength({min : 2})
@@ -34,7 +38,16 @@ const validations = [
     check('credit')
         .trim()
         .isInt( {gt: 0, lt: 5} )
-        .withMessage('Valid credit point is required')
+        .withMessage('Valid credit point is required'),
+    check('period')
+        .trim()
+        .notEmpty()
+        .withMessage('Teaching period is required'),
+    check('provider')
+        .trim()
+        .isString()
+        .notEmpty()
+        .withMessage('Education provider is required')
 ];
 
 /**

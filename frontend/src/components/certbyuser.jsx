@@ -82,7 +82,7 @@ class CertByUser extends Component {
     render() { 
         return (
             <div className="get-certs-by-owner-container" id="get-certs-by-owner-container">
-                <h3>Get Certificates by Name</h3>
+                <h3>Get Certificates</h3>
                 <div className="card-panel red lighten-4" id="get-certs-form-error" style={{display: "none"}} >
                     <span className="red-text text-darken-4">
                         <ul className="error-list">
