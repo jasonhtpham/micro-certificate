@@ -96,8 +96,10 @@ updateAnchorPeers(){
 # removeOldCrypto
 
 createChannel
+sleep 3
 joinChannel
 updateAnchorPeers
+sleep 5
 
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="node"

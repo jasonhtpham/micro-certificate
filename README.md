@@ -2,12 +2,34 @@
 
 A micro certificates issuing application based on Hyperledger Fabric
 
-## Prerequisites
+## Prerequisites & Quickstart
 
-There are some tools needed.
+### There are some tools needed:
 - Docker (docker-compose).
 - curl.
-- Add bin directory into system bash (so we can use those binary to interact with fabric).
+Follow these steps to install all prerequisites:
+[Prerequisites](https://hyperledger-fabric.readthedocs.io/en/release-2.0/commands/peerlifecycle.html).
+
+### Clone this repo to your machine:
+```bash
+git clone https://github.com/jasonhtpham/micro-certificate.git 
+```
+
+### Add bin directory into system bash (so we can use those binaries and docker image to interact with fabric):
+```bash 
+export PATH=<path to the micro-certificate folder>/bin:$PATH
+```
+
+### Bring up the docker containers:
+Run the `backendServerUp` script to bring up the docker containers:
+```bash
+./backendServerUp.sh
+```
+If there is an error saying `access denied`, run this command: `chmod +x backendServerUp.sh` and try again.
+
+### Create channel and install chaincode:
+Run the `createChannel` script 
+
 
 ## Bring up the basic Hyperledger network
 
