@@ -22,6 +22,12 @@ server.use(cookieSession({
 
 server.use(express.static(__dirname + '/public'));
 
+server.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
 // bodyParse setup
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(bodyParser.json());
