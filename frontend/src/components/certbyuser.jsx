@@ -3,7 +3,7 @@ import Axios from 'axios';
 import Collapsible from '../fragments/collapsible';
 import UpdateCert from './updatecert';
 
-const BACKEND_API_URL = 'http://localhost:5000';
+const BACKEND_API_URL = 'http://135.90.143.205:5000';
 
 
 class CertByUser extends Component {
