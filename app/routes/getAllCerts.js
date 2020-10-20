@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
-// Import UserHelper from helpers
-const UserHelper = require('../helpers/UserHelper');
-const userHelper = new UserHelper;
+const bodyParser = require ('body-parser');
+
+
+// bodyParse setup
+router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
 
 module.exports = params => {
     const { hyperledgerApp } = params
