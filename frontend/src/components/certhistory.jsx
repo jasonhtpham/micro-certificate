@@ -1,7 +1,9 @@
 import Axios from 'axios';
 import React, { Component } from 'react';
 
-const BACKEND_API_URL = 'http://135.90.143.205:5000';
+// const BACKEND_API_URL = 'http://135.90.143.205:5000';
+const BACKEND_API_URL = 'http://localhost:5000';
+
 
 class CertHistory extends Component {
     state = {

@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import Axios from 'axios'
 import Collapsible from '../fragments/collapsible';
 
-const BACKEND_API_URL = 'http://135.90.143.205:5000';
+// const BACKEND_API_URL = 'http://135.90.143.205:5000';
+const BACKEND_API_URL = 'http://localhost:5000';
 
-const CREATE_CERT_URL = 'http://135.90.143.205:3000/createCert';
-const GET_CERT_URL = 'http://135.90.143.205:3000/getCertByUser';
+// const CREATE_CERT_URL = 'http://135.90.143.205:3000/createCert';
+// const GET_CERT_URL = 'http://135.90.143.205:3000/getCertByUser';
 
-// const CREATE_CERT_URL = 'http://localhost:3000/createCert';
-// const GET_CERT_URL = 'http://localhost:3000/getCertByUser';
+const CREATE_CERT_URL = 'http://localhost:3000/createCert';
+const GET_CERT_URL = 'http://localhost:3000/getCertByUser';
 
 
 class Users extends Component {

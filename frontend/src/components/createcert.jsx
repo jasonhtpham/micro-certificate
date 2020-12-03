@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 
-const BACKEND_API_URL = 'http://135.90.143.205:5000';
+// const BACKEND_API_URL = 'http://135.90.143.205:5000';
+const BACKEND_API_URL = 'http://localhost:5000';
 
 
 class CreateCert extends Component {
