@@ -5,6 +5,6 @@ sleep 3
 echo "===== Bring up the fabric network ====="
 ./createChannel.sh
 sleep 5
-echo "===== Start the server ====="
-cd app
-npm start
+# echo "===== Start the server ====="
+# cd app
+# npm start

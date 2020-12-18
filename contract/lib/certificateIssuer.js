@@ -40,7 +40,8 @@ class CertificateIssuer extends Contract {
             StudentID: studentID,
             Credit: credit,
             Period: period,
-            Provider: provider
+            Provider: provider,
+            inEffect: true,
         };
         
         return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
@@ -52,7 +53,7 @@ class CertificateIssuer extends Contract {
         if (!certJSON || certJSON.length === 0) {
             throw new Error(`The cert ${id} does not exist`);
         }
-        return certJSON.toString();
+        return Buffer.from(JSON.stringify(certJSON));
     }
 
     // Updatecert updates an existing cert in the world state with provided parameters.

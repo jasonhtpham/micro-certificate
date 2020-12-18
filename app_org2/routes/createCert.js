@@ -42,12 +42,7 @@ const validations = [
     check('period')
         .trim()
         .notEmpty()
-        .withMessage('Teaching period is required'),
-    check('provider')
-        .trim()
-        .isString()
-        .notEmpty()
-        .withMessage('Education provider is required')
+        .withMessage('Teaching period is required')
 ];
 
 /**
@@ -90,7 +85,7 @@ module.exports = params => {
             }
 
             // =====================================
-            const { studentID, firstName, lastName, unitCode, mark, credit, period, provider } = req.body;
+            const { studentID, firstName, lastName, unitCode, mark, credit, period } = req.body;
 
             // Check if entered user exists (registered)            
     
@@ -103,7 +98,7 @@ module.exports = params => {
                 const name = firstName + ' ' + lastName;
     
                 // Receive response from the contract => check whether successful payload OR errors.
-                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode.toUpperCase(), mark, name, studentID, credit, period, provider);
+                const contractResponse = await hyperledgerApp.CreateCert(certId, unitCode.toUpperCase(), mark, name, studentID, credit, period);
                 
                 // Send the information of certificate if the transaction is successfull
                 if (!contractResponse.errors) {

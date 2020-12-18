@@ -95,19 +95,22 @@ class HyperledgerApp {
         }
     }
 
-    CreateCert = async (id, unitCode, mark, name, studentID, credit, period, provider) => {
+    CreateCert = async (id, unitCode, mark, name, studentID, credit, period) => {
         console.log('Submit Transaction: CreateCert() Create a new certificate');
         try {
+            const identity = await wallet.get(registerUser.ApplicationUserId);
+
+            const provider = identity.mspId;
+            // fabricLogger.info(`Provider ${provider.mspId}`);
+
+
             // Return the successful payload if the transaction is committed without errors
             const result = await contract.submitTransaction('CreateCert', id, unitCode, mark, name, studentID, credit, period, provider);
             return prettyJSONString(result.toString());
         } catch (err) {
             console.log(`Error when create certificate: ${err}`);
-
-            // Return errors if any
-            return err;
         }
-    }
+    }   
 
     GetCertsByOwner = async (name, studentID) => {
         // Query certs by name and studentID
