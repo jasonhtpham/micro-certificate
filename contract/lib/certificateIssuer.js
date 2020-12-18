@@ -49,11 +49,11 @@ class CertificateIssuer extends Contract {
 
     // Readcert returns the cert stored in the world state with given id.
     async ReadCert(ctx, id) {
-        const certJSON = await ctx.stub.getState(id); // get the cert from chaincode state
-        if (!certJSON || certJSON.length === 0) {
+        const certByte = await ctx.stub.getState(id); // get the cert from chaincode state
+        if (!certByte || certByte.length === 0) {
             throw new Error(`The cert ${id} does not exist`);
         }
-        return Buffer.from(JSON.stringify(certJSON));
+        return JSON.parse(certByte.toString('utf8'));
     }
 
     // Updatecert updates an existing cert in the world state with provided parameters.
@@ -76,6 +76,16 @@ class CertificateIssuer extends Contract {
             Provider: provider
         };
         return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedCert)));
+    }
+
+    // Modify inEffect value of the certificate to false (expired or revoked)
+    async RevokeCert(ctx, id) {
+        const certToUpdate = await this.ReadCert(ctx, id);
+
+        // Change inEffect to false
+        certToUpdate.inEffect = false;
+
+        return ctx.stub.putState(id, Buffer.from(JSON.stringify(certToUpdate)));
     }
     
 
