@@ -40,7 +40,8 @@ class CertificateIssuer extends Contract {
             StudentID: studentID,
             Credit: credit,
             Period: period,
-            Provider: provider
+            Provider: provider,
+            InEffect: true
         };
         
         return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
@@ -52,29 +53,21 @@ class CertificateIssuer extends Contract {
         if (!certJSON || certJSON.length === 0) {
             throw new Error(`The cert ${id} does not exist`);
         }
-        return certJSON.toString();
+        return JSON.parse(certJSON.toString('utf8'));
     }
 
-    // Updatecert updates an existing cert in the world state with provided parameters.
-    async UpdateCert(ctx, id, unitcode, mark, name, studentID, credit, period, provider) {
+    // RevokeCert revokes an existing cert in the world state with provided id.
+    async RevokeCert(ctx, id) {
         const exists = await this.CertExists(ctx, id);
         if (!exists) {
             throw new Error(`The cert ${id} does not exist`);
         }
 
-        // overwriting original cert with new cert
-        const updatedCert = {
-            docType: 'certificate',
-            ID: id,
-            UnitCode: unitcode,
-            Mark: mark,
-            StudentName: name,
-            StudentID: studentID,
-            Credit: credit,
-            Period: period,
-            Provider: provider
-        };
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(updatedCert)));
+        let certToUpdate = await this.ReadCert(ctx, id);
+
+        certToUpdate.InEffect = false;
+
+        return ctx.stub.putState(id, Buffer.from(JSON.stringify(certToUpdate)));
     }
     
 

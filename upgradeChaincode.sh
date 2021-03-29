@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "===== Export binary files ====="
+export PATH=${PWD}/bin:$PATH
+
 echo "===== Set global variables ====="
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
@@ -44,14 +47,15 @@ CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="node"
 CC_SRC_PATH="./contract"
 CC_NAME="cert"
-VERSION="2"
+VERSION="1.1"
+SEQUENCE="2"
 
 PackageChaincode() {
     rm -rf ${CC_NAME}.tar.gz
     setGlobalsForPeer0Org1
     peer lifecycle chaincode package ${CC_NAME}.tar.gz \
         --path ${CC_SRC_PATH} --lang ${CC_RUNTIME_LANGUAGE} \
-        --label ${CC_NAME}_${VERSION}
+        --label ${CC_NAME}_${SEQUENCE}
     echo "===================== Chaincode is packaged on peer0.org1 ===================== "
 }
 
@@ -69,7 +73,7 @@ InstallChaincode() {
 
 CheckCommitReadiness () {
     peer lifecycle chaincode checkcommitreadiness --channelID mychannel \
-    --name cert --version ${VERSION} --sequence ${VERSION} \
+    --name cert --version ${VERSION} --sequence ${SEQUENCE} \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --output json
 }
 
@@ -79,12 +83,12 @@ ApproveChaincode () {
     #Query Installed cc to get PACKAGE_ID
     peer lifecycle chaincode queryinstalled >&log.txt
     cat log.txt
-    PACKAGE_ID=$(sed -n "/${CC_NAME}_${VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
+    PACKAGE_ID=$(sed -n "/${CC_NAME}_${SEQUENCE}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
 
     # Approve cc on peer0Org1
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${VERSION} \
-    --package-id $PACKAGE_ID --sequence ${VERSION} \
+    --package-id $PACKAGE_ID --sequence ${SEQUENCE} \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
 
     echo "CC is approved by peer0.Org1.example.com"
@@ -97,7 +101,7 @@ ApproveChaincode () {
 
     peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     --channelID $CHANNEL_NAME --name cert --version ${VERSION} \
-    --package-id $PACKAGE_ID --sequence ${VERSION} \
+    --package-id $PACKAGE_ID --sequence ${SEQUENCE} \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
     echo "CC is approved by peer0.Org2.example.com"
     # Check commit readiness on Org2
@@ -109,7 +113,7 @@ CommitChaincode () {
     setGlobalsForPeer0Org1
     peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
-    --channelID $CHANNEL_NAME --name cert --version ${VERSION} --sequence ${VERSION} \
+    --channelID $CHANNEL_NAME --name cert --version ${VERSION} --sequence ${SEQUENCE} \
     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA
     # --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA
