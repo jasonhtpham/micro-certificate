@@ -23,35 +23,52 @@ class CertificateIssuer extends Contract {
     // }
 
     // Createcert issues a new cert to the world state with given details.
-    async CreateCert(ctx, id, unitcode, mark, name, studentID, credit, period, provider) {
+    // async CreateCert(ctx, id, unitcode, mark, name, studentID, credit, period, provider) {
+    //     // Check if the certificate already exists
+    //     const exists = await this.CertExists(ctx, id);
+    //     if (exists) {
+    //         throw new Error(`The certificate ${id} already exists`);
+    //     }
+
+    //     // Create the certificate and save to the state
+    //     const cert = {
+    //         docType: 'certificate',
+    //         ID: id,
+    //         UnitCode: unitcode,
+    //         Mark: mark,
+    //         StudentName: name,
+    //         StudentID: studentID,
+    //         Credit: credit,
+    //         Period: period,
+    //         Provider: provider,
+    //         InEffect: true
+    //     };
+        
+    //     return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
+    // }
+
+    async CreateCert(ctx, hashedDoc, signature, timestamp) {
         // Check if the certificate already exists
-        const exists = await this.CertExists(ctx, id);
+        const exists = await this.CertExists(ctx, hashedDoc);
         if (exists) {
-            throw new Error(`The certificate ${id} already exists`);
+            throw new Error(`The certificate ${hashedDoc} already exists`);
         }
 
         // Create the certificate and save to the state
         const cert = {
             docType: 'certificate',
-            ID: id,
-            UnitCode: unitcode,
-            Mark: mark,
-            StudentName: name,
-            StudentID: studentID,
-            Credit: credit,
-            Period: period,
-            Provider: provider,
-            InEffect: true
+            signature,
+            timestamp,
         };
         
-        return ctx.stub.putState(id, Buffer.from(JSON.stringify(cert)));
+        return ctx.stub.putState(hashedDoc, Buffer.from(JSON.stringify(cert)));
     }
 
     // Readcert returns the cert stored in the world state with given id.
-    async ReadCert(ctx, id) {
-        const certJSON = await ctx.stub.getState(id); // get the cert from chaincode state
+    async ReadCert(ctx, hashedDoc) {
+        const certJSON = await ctx.stub.getState(hashedDoc); // get the cert from chaincode state
         if (!certJSON || certJSON.length === 0) {
-            throw new Error(`The cert ${id} does not exist`);
+            throw new Error(`The cert ${hashedDoc} does not exist`);
         }
         return JSON.parse(certJSON.toString('utf8'));
     }
